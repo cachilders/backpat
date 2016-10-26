@@ -1,0 +1,19 @@
+{
+  "name": "backpat",
+  "version": "0.0.1",
+  "description": "Automate stack articulation",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cachilders/backpat.git"
+  },
+  "author": "Casey A. Childers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cachilders/backpat/issues"
+  },
+  "homepage": "https://github.com/cachilders/backpat#readme"
+}
