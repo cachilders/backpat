@@ -48,6 +48,7 @@ module.exports = function(callback) {
 }
 
 function seedDependencies(obj) {
+  console.log(obj)
   Object.keys(obj)
   .forEach(function(dependency) {
     if (!dependency.private) {
@@ -64,17 +65,23 @@ function gatherDetails(module) {
   fs.readFile(modulePath, function(err, data) {
     var details = JSON.parse(data.toString('utf8'));
     dependency.name = details.name;
-    dependency.url = details.homepage || details.repository.url.replace(/git\+/, '');
+    dependency.url = details.homepage || details.repository ?
+      details.repository.url.replace(/\w*\+/, '') : '' ;
     dependency.description = details.description;
-    gitStarCount(details.repository.url, dependency);
+
+    if (details.repository) {
+      gitStarCount(details.repository.url, dependency);
+    }
+
   });
 }
 
 function gitStarCount(url, dependency) {
+  var parse = /git.*\:\/\/git@\w*\.*com\/|\w*.*\:\/\/\w*\.*com\/|\.git/g
   inCount++;
   var httpOptions = {
     hostname: 'api.github.com',
-    path: '/repos/' + url.replace(/git|\+https:\/\/github.com\/|\./g, ''),
+    path: '/repos/' + url.replace(parse, ''),
     method: 'GET',
     headers: {}
   };
@@ -95,6 +102,6 @@ function gitStarCount(url, dependency) {
     if (inCount === outCount) {
       event.emit('complete');
     }
-    
-  })
+
+  });
 }
