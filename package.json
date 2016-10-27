@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/cachilders/backpat/issues"
   },
-  "homepage": "https://github.com/cachilders/backpat#readme"
+  "homepage": "https://github.com/cachilders/backpat#readme",
+  "devDependencies": {
+    "eslint": "^3.8.1",
+    "mocha": "^3.1.2"
+  }
 }
