@@ -1,15 +1,20 @@
 /* @flow */
 "use strict";
-var path  = require('path');
-var fs    = require('fs');
-var https = require('https');
+
+var path         = require('path');
+var fs           = require('fs');
+var https        = require('https');
+var EventEmitter = require('events').EventEmitter;
 
 var rootDir = process.cwd() + '/';
 
 var pkgjsn;
+var inCount = 0;
+var outCount = 0;
 var dependencies = {};
+var event = new EventEmitter();
 
-module.exports = function(callback) { //Requires annotation for Flow
+module.exports = function(callback) {
   fs.readFile(rootDir + '/package.json', function(err, data) {
     if (err) throw err;
     pkgjsn = JSON.parse(data.toString('utf8'));
@@ -35,11 +40,12 @@ module.exports = function(callback) { //Requires annotation for Flow
 
     gitStarCount('nodejs/node', dependencies.node);
 
-    callback(dependencies);
+    event.on('complete', function() {
+      callback(dependencies);
+    });
 
   });
 }
-
 
 function seedDependencies(obj) {
   Object.keys(obj)
@@ -65,12 +71,14 @@ function gatherDetails(module) {
 }
 
 function gitStarCount(url, dependency) {
+  inCount++;
   var httpOptions = {
     hostname: 'api.github.com',
     path: '/repos/' + url.replace(/git|\+https:\/\/github.com\/|\./g, ''),
     method: 'GET',
     headers: {}
   };
+
   httpOptions.headers['User-Agent'] = 'cachilders/backpat';
   var result = '';
   https.get(httpOptions, function(res) {
@@ -78,8 +86,15 @@ function gitStarCount(url, dependency) {
       result += data;
     });
   }).on('error', function(err) {
+    outCount++;
     console.error(err);
   }).on('close', function() {
+    outCount++;
     dependency.stars = JSON.parse(result.toString('utf8')).stargazers_count;
+
+    if (inCount === outCount) {
+      event.emit('complete');
+    }
+    
   })
 }
