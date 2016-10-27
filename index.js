@@ -1,40 +1,45 @@
 /* @flow */
 "use strict";
-var path    = require('path');
-var fs      = require('fs');
-var https   = require('https');
+var path  = require('path');
+var fs    = require('fs');
+var https = require('https');
 
 var rootDir = process.cwd() + '/';
 
 var pkgjsn;
-var inputCount = 0;
-var outputCount = 0;
 var dependencies = {};
 
-fs.readFile(rootDir + '/package.json', function(err, data) {
-  if (err) throw err;
-  pkgjsn = JSON.parse(data.toString('utf8'));
-  if (pkgjsn.dependencies) {
-    seedDependencies(pkgjsn.dependencies);
-  }
-  if (pkgjsn.devDependencies) {
-    seedDependencies(pkgjsn.devDependencies);
-  }
-  for (var k in dependencies) {
-    inputCount++;
-    gatherDetails(k);
-  }
-  dependencies.node = {
-    version: process.versions.node,
-    description: 'A JavaScript runtime ✨🐢🚀✨',
-    name: 'Node.js',
-  }
-  gitStarCount('https://github.com/nodejs/node', dependencies.node);
-});
+module.exports = function(callback) { //Requires annotation for Flow
+  fs.readFile(rootDir + '/package.json', function(err, data) {
+    if (err) throw err;
+    pkgjsn = JSON.parse(data.toString('utf8'));
 
-module.exports = function() {
+    if (pkgjsn.dependencies) {
+      seedDependencies(pkgjsn.dependencies);
+    }
 
+    if (pkgjsn.devDependencies) {
+      seedDependencies(pkgjsn.devDependencies);
+    }
+
+    for (var k in dependencies) {
+      gatherDetails(k);
+    }
+
+    dependencies.node = {
+      name: 'Node.js',
+      version: process.versions.node,
+      description: 'A JavaScript runtime ✨🐢🚀✨',
+      stars: ''
+    }
+
+    gitStarCount('nodejs/node', dependencies.node);
+
+    callback(dependencies);
+
+  });
 }
+
 
 function seedDependencies(obj) {
   Object.keys(obj)
@@ -62,7 +67,6 @@ function gatherDetails(module) {
 function gitStarCount(url, dependency) {
   var httpOptions = {
     hostname: 'api.github.com',
-    port: '443',
     path: '/repos/' + url.replace(/git|\+https:\/\/github.com\/|\./g, ''),
     method: 'GET',
     headers: {}
@@ -75,10 +79,7 @@ function gitStarCount(url, dependency) {
     });
   }).on('error', function(err) {
     console.error(err);
-    outputCount++;
   }).on('close', function() {
     dependency.stars = JSON.parse(result.toString('utf8')).stargazers_count;
-    console.log(dependencies)
-    outputCount++;
   })
 }
