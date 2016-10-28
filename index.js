@@ -48,7 +48,6 @@ module.exports = function(callback) {
 }
 
 function seedDependencies(obj) {
-  console.log(obj)
   Object.keys(obj)
   .forEach(function(dependency) {
     if (!dependency.private) {
