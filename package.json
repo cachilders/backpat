@@ -1,6 +1,6 @@
 {
   "name": "backpat",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A simple tool for high-fiving your tech stack",
   "main": "index.js",
   "scripts": {
