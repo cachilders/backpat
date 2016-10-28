@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Nothing yet
 
+## 0.1.2 - 2016-10-27
+### Changed
+- Cleaned metadocs
+– Removed debugging logs
+
 ## 0.1.1 - 2016-10-27
 ### Added
 - Bug fixes (Github API call and url handling)
