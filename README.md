@@ -23,29 +23,32 @@ get back is an object like this, if considerably more robust.
 { eslint:
    { version: '3.8.1',
      name: 'eslint',
-     url: 'http://eslint.org',
+     url: 'https://github.com/eslint/eslint.git',
      description: 'An AST-based pattern checker for JavaScript.',
-     stars: 6170 },
+     stars: 'Deprecated. Use ["downloads"] instead.',
+     downloads: 4038383 },
   mocha:
    { version: '3.1.2',
      name: 'mocha',
-     url: 'https://mochajs.org',
+     url: 'https://github.com/mochajs/mocha.git',
      description: 'simple, flexible, fun test framework',
-     stars: 10661 }
-}
+     stars: 'Deprecated. Use ["downloads"] instead.',
+     downloads: 4001598 }}
 ```
 
 Simple as that. The Github stargazer count makes filtering the heavy hitters
 from the plugins a snap, and the rest is up to the frontend.
 
-**Please note:** Github __strongly limits__ unauthenticated API calls. If you get
-undefined for many or all of your dependencies' stars, the limit for the app
-has been reached for the given hour. This is less than ideal and a solution is
-in the works.
+**Please note:** Due to Github's _strong_ restriction of unauthenticated calls
+I've transitioned from stargazer_count to npm's download count for the prior
+month. I'll remove the stars key entirely in a future update. For now it
+and the code responsible for the request remain in the project. Fork at
+your leisure to build that alternate timeline. Bonus: it's significantly
+faster since the npm API allows for batch requests.
 
 Also worth noting: it's all async – so don't worry if you've got kitchen-
 sink-grade dependencies.
 
 This is a nascent module that is bound to require some TLC. If you encounter
-any rough edges, please don't hesitate to drop me a line. Oh, and __feel free to
-submit at PR__. There's still much to be done.
+any rough edges, please don't hesitate to drop me a line. Oh, and _feel free to
+submit at PR_. There's still much to be done.

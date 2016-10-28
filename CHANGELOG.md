@@ -11,10 +11,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Nothing yet
 
+## 0.2.0 - 2016-10-28
+### Added
+- Implemented batch request for npm monthly download counts
+- Minor code comments
+
+### Changed
+- Deprecated Github star count in favor of npm download counts
+- Documented change in README
+
 ## 0.1.2 - 2016-10-27
 ### Changed
 - Cleaned metadocs
-– Removed debugging logs
+- Removed debugging logs
 
 ## 0.1.1 - 2016-10-27
 ### Added
@@ -25,4 +34,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - README now contains module description and usage documentation
 - Module is in solid, largely untested, working order
 - Mocha dependencies are in place, however no tests have been written
-– Module discovers and reads root package.json in limited dev environments
+- Module discovers and reads root package.json in limited dev environments
