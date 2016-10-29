@@ -1,48 +1,9 @@
-/* @flow */
-
-var fs           = require('fs');
-var https        = require('https');
-var EventEmitter = require('events').EventEmitter;
-
-var rootDir      = process.cwd() + '/';
-var dependencies = {};
-var event        = new EventEmitter();
-
-module.exports = function(callback) {
-  fs.readFile(rootDir + '/package.json', function(err, data) {
-    if (err) throw err;
-    var pkgjsn = JSON.parse(data.toString('utf8'));
-
-    if (pkgjsn.dependencies) {
-      seedDependencies(pkgjsn.dependencies);
-    }
-
-    if (pkgjsn.devDependencies) {
-      seedDependencies(pkgjsn.devDependencies);
-    }
-
-    for (var k in dependencies) {
-      gatherDetails(k);
-    }
-
-    // Manually inject Node because it's certainly part of your stack
-    dependencies.node = {
-      name        : 'Node.js',
-      version     : process.versions.node,
-      description : 'A JavaScript runtime ✨🐢🚀✨',
-      stars       : 'Deprecated. Use ["downloads"] instead.',
-      downloads   : 1000000 // A fake number since Node isn't downloaded on npm
-    };
-
-    event.on('complete', function() {
-      callback(dependencies);
-    });
-
-  });
-};
+var https = require('https');
 
 // Add modules and their versions to the dependencies object
-function seedDependencies(obj) {
+module.exports = {};
+
+module.exports.seedDependencies(obj) = function() {
   Object.keys(obj)
   .forEach(function(dependency) {
     if (!dependency.private) {
@@ -55,7 +16,7 @@ function seedDependencies(obj) {
 }
 
 // Fetch each module's package.json and add details from it
-function gatherDetails(module) {
+module.exports.gatherDetails(module) = function() {
   var modulePath = rootDir + 'node_modules/' + module + '/package.json';
   var dependency = dependencies[module];
   fs.readFile(modulePath, function(err, data) {
@@ -70,7 +31,7 @@ function gatherDetails(module) {
 }
 
 // Batch retrieve the npm download counts for all modules for the past month
-function fetchModuleDownloads() {
+module.exports.fetchModuleDownloads = function() {
   var httpOptions = {
     hostname: 'api.npmjs.org',
     path: '/downloads/point/last-month/' + Object.keys(dependencies).join(','),

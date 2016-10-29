@@ -3,6 +3,12 @@
 Backpat is a simple tool for use in automating the production of tech stack
 notes in projects. (Looking at you, student coders.)
 
+Install it:
+
+```bash
+$ npm install --save backpat
+```
+
 Require it like so:
 
 ```javascript
