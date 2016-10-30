@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Nothing yet
 
+## 0.3.0 - 2016-10-29
+### Changed
+- Fully removed Github star code and references
+- Moved utility functions to helpers.js
+- Updated documentation
+
 ## 0.2.0 - 2016-10-28
 ### Added
 - Implemented batch request for npm monthly download counts
