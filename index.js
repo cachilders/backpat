@@ -34,7 +34,7 @@ module.exports = function(callback) {
     };
 
     event.on('complete', function() {
-      callback(dependencies);
+      return callback(dependencies);
     });
 
   });

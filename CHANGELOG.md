@@ -4,12 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## Unreleased
 ### Added
-- Nothing so far
+- One simple unit test
 
 ### Changed
-- Nothing yet
+- Modify test.js (the script used to run Backpat sans project) and
+rename as runner.js
 
 ## 0.3.0 - 2016-10-29
 ### Changed
