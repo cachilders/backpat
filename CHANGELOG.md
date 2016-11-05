@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Modify test.js (the script used to run Backpat sans project) and
 rename as runner.js
+- Replace ```console.log``` with ```process.stout.write``` in runner.js
 
 ## 0.3.0 - 2016-10-29
 ### Changed
