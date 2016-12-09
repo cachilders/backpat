@@ -4,12 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 0.4.0 - 2016-12-9
 ### Added
-- 
+- Add initial test coverage (~20%)
 
 ### Changed
-- 
+- Breaking: change import method to ```const backpat = require('backpat').backpat```
 
 ## 0.3.1 - 2016-11-4
 ### Added

@@ -4,7 +4,7 @@
   "description": "A simple tool for high-fiving your tech stack",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/tests.js"
+    "test": "istanbul cover _mocha test"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
     "chai": "^3.5.0",
     "eslint": "^3.8.1",
     "eslint-plugin-flowtype": "^2.25.0",
+    "istanbul": "^1.1.0-alpha.1",
     "mocha": "^3.1.2"
   },
   "dependencies": {}

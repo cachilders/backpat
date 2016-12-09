@@ -10,10 +10,10 @@ Install it as such:
 $ npm install --save backpat
 ```
 
-Require it like so:
+**New in 0.4.0:** Require it like so:
 
 ```javascript
-const backpat = require('backpat');
+const backpat = require('backpat').backpat;
 ```
 
 Invoke it thusly:
@@ -50,5 +50,3 @@ sink-grade dependencies.
 This is a nascent module that is bound to require some TLC. If you encounter
 any rough edges, please don't hesitate to drop me a line. Oh, and _feel free to
 submit at PR_. There's still much to be done.
-
-Unit tests are next on the list.
