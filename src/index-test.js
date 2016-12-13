@@ -1,25 +1,41 @@
-var chai    = require('chai');
-var backpat = require('./index').backpat;
-var vars    = require('./index');
+var chai            = require('chai');
+var spies           = require('chai-spies');
+var expect          = chai.expect;
+var backpat         = require('./index').backpat;
+var vars            = require('./index');
+
+chai.use(spies);
 
 describe('Backpat', function() {
   it('Should be a function', function() {
-    chai.expect(backpat).to.be.a('function');
+    expect(backpat).to.be.a('function');
+  });
+  it('Should accept a single parameter', function() {
+    expect(backpat).to.have.lengthOf(1);
+  });
+
+  it('Should accept a function as its argument', function() {
+    var callback = function(){};
+    var spy = chai.spy(callback);
+    expect(spy).to.be.spy;
+    backpat(spy);
+    // asynchronous nature of backpat function makes this very difficult to test
+    expect(spy).to.have.been.called();
   });
   describe('Properties', function() {
     describe('rootDir', function() {
       it('Should be a string', function() {
-        chai.expect(vars.rootDir).to.be.a('string');
+        expect(vars.rootDir).to.be.a('string');
       });
     });
     describe('dependencies', function() {
       it('Should be an object', function() {
-        chai.expect(vars.dependencies).to.be.a('object');
+        expect(vars.dependencies).to.be.a('object');
       });
     });
     describe('event', function() {
       it('Should be an object', function() {
-        chai.expect(vars.event).to.be.a('object');
+        expect(vars.event).to.be.a('object');
       });
     });
   });

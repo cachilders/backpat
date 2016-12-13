@@ -21,6 +21,7 @@
   "homepage": "https://github.com/cachilders/backpat#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "chai-spies": "^0.7.1",
     "eslint": "^3.8.1",
     "eslint-plugin-flowtype": "^2.25.0",
     "istanbul": "^1.1.0-alpha.1",
