@@ -1,5 +1,5 @@
 var chai    = require('chai');
-var helpers = require('../helpers');
+var helpers = require('./helpers');
 
 describe('Helpers', function() {
   it('Should be an object', function() {

@@ -1,6 +1,6 @@
 var chai    = require('chai');
-var backpat = require('../index').backpat;
-var vars    = require('../index');
+var backpat = require('./index').backpat;
+var vars    = require('./index');
 
 describe('Backpat', function() {
   it('Should be a function', function() {

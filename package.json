@@ -2,9 +2,12 @@
   "name": "backpat",
   "version": "0.4.0",
   "description": "A simple tool for high-fiving your tech stack",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "istanbul cover _mocha test"
+    "test": "istanbul cover _mocha test",
+    "watch:test": "mocha:watch",
+    "lint": "eslint src",
+    "validate": "npm-run-all --parallel lint test"
   },
   "repository": {
     "type": "git",
@@ -21,7 +24,8 @@
     "eslint": "^3.8.1",
     "eslint-plugin-flowtype": "^2.25.0",
     "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^3.1.2"
+    "mocha": "^3.1.2",
+    "npm-run-all": "^3.1.2"
   },
   "dependencies": {}
 }
