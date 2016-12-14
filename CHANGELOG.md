@@ -1,8 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) 
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## 0.5.0 - 2016-12-9
+### Added
+- Increase test coverage (~20%)
+- Add validate script to parallelize linting and testing in order to simplify contributions
+- Add mocha options `mocha.opts` file and move test files to `src` folder
+- Expose `expect` assertions to test files
 
 ## 0.4.0 - 2016-12-9
 ### Added
