@@ -1,2 +1,2 @@
-src/index-test.js
-src/helpers-test.js
+src/index.test.js
+src/helpers.test.js
