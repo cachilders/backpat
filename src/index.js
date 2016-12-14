@@ -8,34 +8,48 @@ exports.rootDir = process.cwd() + '/';
 exports.dependencies = {};
 exports.event = new EventEmitter();
 
-exports.backpat = function(callback) {
-  fs.readFile(exports.rootDir + '/package.json', function(err, data) {
-    if (err) throw err;
-    var pkgjsn = JSON.parse(data.toString('utf8'));
+var packageDeps = new Promise(
+  function(resolve, reject) {
+    fs.readFile(exports.rootDir + '/package.json', function(err, data) {
 
-    if (pkgjsn.dependencies) {
-      helpers.seedDependencies(pkgjsn.dependencies);
-    }
+      if (err) reject({error: err});
 
-    if (pkgjsn.devDependencies) {
-      helpers.seedDependencies(pkgjsn.devDependencies);
-    }
+      var pkgjsn = JSON.parse(data.toString('utf8'));
 
-    for (var k in exports.dependencies) {
-      helpers.gatherDetails(k);
-    }
+      if (pkgjsn.dependencies) {
+        helpers.seedDependencies(pkgjsn.dependencies);
+      }
 
-    // Manually inject Node because it's certainly part of your stack
-    exports.dependencies.node = {
-      name        : 'Node.js',
-      version     : process.versions.node,
-      description : 'A JavaScript runtime ✨🐢🚀✨',
-      downloads   : 10000000 // A fake number since Node isn't downloaded on npm
-    };
+      if (pkgjsn.devDependencies) {
+        helpers.seedDependencies(pkgjsn.devDependencies);
+      }
 
-    exports.event.on('complete', function() {
-      return callback(exports.dependencies);
+      for (var k in exports.dependencies) {
+        helpers.gatherDetails(k);
+      }
+
+      // Manually inject Node because it's certainly part of your stack
+      exports.dependencies.node = {
+        name        : 'Node.js',
+        version     : process.versions.node,
+        description : 'A JavaScript runtime ✨🐢🚀✨',
+        downloads   : 10000000 // A fake number since Node isn't downloaded on npm
+      };
+
+      exports.event.on('gathered', function() {
+        resolve(exports.dependencies);
+      });
+
     });
+  }
+);
 
-  });
+exports.backpat = function(callback) {
+  packageDeps
+    .then(function(results) {
+      callback(results);
+    })
+    .then(function() {
+      exports.event.emit('complete');
+    });
 };

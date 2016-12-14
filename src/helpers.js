@@ -64,7 +64,7 @@ module.exports = {
       });
 
       if (inCount === outCount) {
-        vars.event.emit('complete');
+        vars.event.emit('gathered');
       }
 
     });

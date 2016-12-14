@@ -17,7 +17,6 @@ describe('Backpat', function() {
   it('Should accept a function as its argument', function() {
     var callback = function(){};
     var spy = chai.spy(callback);
-    expect(spy).to.be.spy;
     backpat(spy);
     // asynchronous nature of backpat function makes this very difficult to test
     vars.event.on('complete', expect(spy).to.have.been.called.once());
