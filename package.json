@@ -4,7 +4,7 @@
   "description": "A simple tool for high-fiving your tech stack",
   "main": "src/index.js",
   "scripts": {
-    "test": "istanbul cover _mocha test",
+    "test": "nyc mocha",
     "watch:test": "mocha:watch",
     "lint": "eslint src",
     "validate": "npm-run-all --parallel lint test"
@@ -24,9 +24,15 @@
     "chai-spies": "^0.7.1",
     "eslint": "^3.8.1",
     "eslint-plugin-flowtype": "^2.25.0",
-    "istanbul": "^1.1.0-alpha.1",
     "mocha": "^3.1.2",
-    "npm-run-all": "^3.1.2"
+    "npm-run-all": "^3.1.2",
+    "nyc": "^10.0.0"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "functions": 90,
+    "lines": 90,
+    "statements": 90
   },
   "dependencies": {}
 }

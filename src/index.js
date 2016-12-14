@@ -1,7 +1,7 @@
 /* @flow */
 
 var fs           = require('fs');
-var EventEmitter = require('events').EventEmitter;
+var EventEmitter = require('events');
 var helpers      = require('./helpers');
 
 exports.rootDir = process.cwd() + '/';

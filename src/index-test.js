@@ -1,8 +1,8 @@
-var chai            = require('chai');
-var spies           = require('chai-spies');
-var expect          = chai.expect;
-var backpat         = require('./index').backpat;
-var vars            = require('./index');
+var chai    = require('chai');
+var spies   = require('chai-spies');
+var expect  = chai.expect;
+var backpat = require('./index').backpat;
+var vars    = require('./index');
 
 chai.use(spies);
 
@@ -20,7 +20,7 @@ describe('Backpat', function() {
     expect(spy).to.be.spy;
     backpat(spy);
     // asynchronous nature of backpat function makes this very difficult to test
-    expect(spy).to.have.been.called();
+    vars.event.on('complete', expect(spy).to.have.been.called.once());
   });
   describe('Properties', function() {
     describe('rootDir', function() {
