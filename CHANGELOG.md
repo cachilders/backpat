@@ -6,10 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 0.5.0 - 2016-12-9
 ### Added
-- Increase test coverage (~20%)
+- Increase test coverage (~80%)
 - Add validate script to parallelize linting and testing in order to simplify contributions
 - Add mocha options `mocha.opts` file and move test files to `src` folder
 - Expose `expect` assertions to test files
+- Add .travis.yml config
+- Add build / coverage badges
 
 ## 0.4.0 - 2016-12-9
 ### Added
