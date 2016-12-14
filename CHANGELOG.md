@@ -6,11 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Added
-- 
+-
 ### Changed
 - Renamed test files to exclude them from coverage calculations
 
 ## 0.5.0 - 2016-12-9
+>>>>>>> 534a861948d157a1915613fe43836eb5028c9f1f
 ### Added
 - Increase test coverage (~65%)
 - Add validate script to parallelize linting and testing in order to simplify contributions
