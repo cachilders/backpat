@@ -1,6 +1,9 @@
 module.exports = {
 
-  "extends": ["eslint:recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:flowtype/recommended"
+  ],
 
   "parserOptions": {
     "ecmaVersion": 6,

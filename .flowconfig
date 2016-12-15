@@ -1,6 +1,9 @@
 [ignore]
+*.test.js
+dist
 
 [include]
+event-emitter
 
 [libs]
 
