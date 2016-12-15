@@ -47,9 +47,11 @@ var packageDeps = new Promise(
 exports.backpat = function(callback) {
   packageDeps
     .then(function(results) {
-      callback(results);
+      return Promise.resolve(callback(results));
     })
     .then(function() {
       exports.event.emit('complete');
-    });
+    }), function(error) {
+      console.err(error);
+    };
 };
