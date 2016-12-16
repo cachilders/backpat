@@ -9,6 +9,9 @@ exports.dependencies = {};
 exports.event = new EventEmitter();
 
 exports.backpat = function(callback) {
+  if (typeof callback !== 'function') {
+    throw new TypeError('backpat should accept type function as input parameter');
+  }
   fs.readFile(exports.rootDir + '/package.json', function(err, data) {
     if (err) throw err;
     var pkgjsn = JSON.parse(data.toString('utf8'));
