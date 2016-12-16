@@ -70,5 +70,7 @@
       "pre-commit": "npm run validate"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "ramda": "^0.22.1"
+  }
 }
