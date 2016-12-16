@@ -10,7 +10,7 @@ const isNotPrivate = _.compose(_.not, _.prop('private'));
 const filterPrivate = _.filter(isNotPrivate);
 const removeCaret = _.replace(/\^/, '');
 // TODO: RENAME something more expressive and less awkward
-const formatVersionsAndFilterPrivate = _.map(removeCaret, filterPrivate);
+const formatVersionsAndFilterPrivate = _.compose(_.map(removeCaret), filterPrivate);
 
 module.exports = {
   // Add modules and their versions to the dependencies object
