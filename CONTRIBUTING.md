@@ -33,12 +33,6 @@ your [pull requests](https://help.github.com/articles/creating-a-pull-request).
  * Trailing commas,
  * Avd abbr wrds.
 
-<<<<<<< Updated upstream
- ## License
-
- By contributing to Backpat, you agree that your contributions will be
- licensed under its MIT license.
-=======
 # Contributors
 <!-- Contributors START
 Casey_Childers cachilders https://github.com/cachilders docs code prReview
@@ -53,4 +47,3 @@ Contributors END -->
 
 By contributing to Backpat, you agree that your contributions will be
 licensed under its MIT license.
->>>>>>> Stashed changes
