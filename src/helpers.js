@@ -1,6 +1,9 @@
 /* @flow */
 
-var https = require('https');
+import https from 'https';
+import { readFile } from 'fs';
+import { has } from 'lodash/has';
+
 // var fs    = require('fs');
 //
 // var vars  = require('./index');
@@ -40,6 +43,27 @@ var https = require('https');
 //     }
 //   });
 // })
+//
+
+export const rootDir = process.cwd() + '/';
+
+export const readPackageJson = (f: Function) => {
+  if (typeof f !== 'function') {
+    throw new TypeError(`Expected a function but received ${ typeof f } instead`);
+  }
+  return new Promise((resolve, reject) => {
+    readFile(rootDir + '/package.json', (err, data) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(JSON.parse(data.toString()));
+    });
+  })
+  .then(f)
+  .catch((reason) => {
+    throw new Error(reason);
+  });
+};
 
 export function NpmConfig(dependencies: {}) {
   return {
