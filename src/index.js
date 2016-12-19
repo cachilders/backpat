@@ -2,7 +2,9 @@
 
 var fs           = require('fs');
 var EventEmitter = require('events');
-var helpers      = require('./helpers');
+import { has } from 'lodash/has';
+import { formatVersionsAndFilterPrivate, getNpmData } from './ramda';
+import { NpmConfig, httpsGetPromise } from './helpers';
 
 exports.rootDir = process.cwd() + '/';
 exports.dependencies = {};
@@ -13,15 +15,17 @@ exports.backpat = function(callback: Function) {
     throw new TypeError('backpat should accept type function as input parameter');
   }
   fs.readFile(exports.rootDir + '/package.json', function(err, data) {
-    if (err) throw err;
+    if (err) throw new Error(err);
     var pkgjsn = JSON.parse(data.toString('utf8'));
 
-    if (pkgjsn.dependencies) {
-      helpers.seedDependencies(pkgjsn.dependencies);
+    if (has('dependencies', pkgjsn)) {
+      const deps = formatVersionsAndFilterPrivate(pkgjsn.dependencies);
+      getNpmData(deps);
     }
 
-    if (pkgjsn.devDependencies) {
-      helpers.seedDependencies(pkgjsn.devDependencies);
+    if (has('devDependencies', pkgjsn)) {
+      const devDeps = formatVersionsAndFilterPrivate(pkgjsn.dependencies);
+      getNpmData(devDeps);
     }
 
     for (var k in exports.dependencies) {
