@@ -10,7 +10,7 @@ Install it as such:
 $ npm install --save backpat
 ```
 
-**New in 0.4.0:** Require it like so:
+As of v0.4.0: Require it like so:
 
 ```javascript
 const backpat = require('backpat').backpat;
