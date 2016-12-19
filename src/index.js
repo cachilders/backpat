@@ -39,3 +39,5 @@ exports.backpat = function(callback: Function) {
       description : 'A JavaScript runtime ✨🐢🚀✨',
       downloads   : 10000000 // A fake number since Node isn't downloaded on npm
     };
+  });
+};
