@@ -1,8 +1,41 @@
 import { expect } from 'chai';
-import { NpmConfig } from './helpers';
+import { NpmConfig, readPackageJson } from './helpers';
 import { getNpmData } from './ramda';
 
 describe('Helpers', function() {
+
+  describe('readPackageJson', () => {
+    it('should be a function', () => {
+      expect(readPackageJson).to.be.a('function');
+    });
+    it('should throw TypeError when passed argument that is not a function', () => {
+      expect(readPackageJson).to.throw(TypeError);
+      expect(() => readPackageJson(42)).to.throw(TypeError);
+      expect(() => readPackageJson('bad input')).to.throw(TypeError);
+    });
+    it('should return a promise object when passed callback', () => {
+      expect(readPackageJson(() => {})).to.be.an.instanceof(Promise);
+    });
+    it('should throw error when path does not exist', () => {
+      // TODO:
+      expect().to.be.ok;
+    });
+    it('should return project\'s parsed package.json', () => {
+      readPackageJson((next) => next).then((pkg) => {
+        expect(pkg).to.be.an('object');
+        expect(pkg).to.contain.all.keys('name', 'description');
+        expect(pkg).to.have.any.keys(
+          'version',
+          'main',
+          'scripts',
+          'author',
+          'license',
+          'dependencies',
+          'devDependencies'
+        );
+      });
+    });
+  });
 
   const deps = {
     "lodash": "4.17.2",
