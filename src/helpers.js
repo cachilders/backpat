@@ -47,16 +47,20 @@ import { has } from 'lodash/has';
 
 export const rootDir = process.cwd() + '/';
 
-export const readPackageJson = (f: Function) => {
+export const readPackageJson = (f: Function, path: string = rootDir) => {
   if (typeof f !== 'function') {
-    throw new TypeError(`Expected a function but received ${ typeof f } instead`);
+    throw new TypeError(`Expected type function but received ${ typeof f } instead`);
+  }
+  if (typeof path !== 'string') {
+    throw new TypeError(`Expected type string but received ${ typeof f } instead`);
   }
   return new Promise((resolve, reject) => {
-    readFile(rootDir + '/package.json', (err, data) => {
+    readFile(path + '/package.json', (err, data) => {
       if (err) {
         reject(err);
+      } else {
+        resolve(JSON.parse(data.toString()));
       }
-      resolve(JSON.parse(data.toString()));
     });
   })
   .then(f)
