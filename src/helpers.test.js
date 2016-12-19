@@ -12,6 +12,7 @@ describe('Helpers', function() {
     it('should be a function that accepts one argument and one optional argument', () => {
       expect(readPackageJson).to.be.a('function');
       expect(readPackageJson.length).to.equal(1);
+      // TODO: TEST for optional argument
     });
 
     it('should throw TypeError when passed argument that is not a function', () => {
