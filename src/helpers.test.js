@@ -8,7 +8,7 @@ import {
   fetchDependency,
   MakeDependency
 } from './helpers';
-import { getNpmData } from './ramda';
+import { getNpmData } from './utilities';
 
 chai.use(chaiSpies);
 

@@ -10,7 +10,7 @@ export const readPackageJson = (f: Function, path: string = rootDir) => {
     throw new TypeError(`Function readPackageJson expected type: function but received ${ typeof f } instead`);
   }
   if (typeof path !== 'string') {
-    throw new TypeError(`Function readPackageJson expected type: string but received ${ typeof f } instead`);
+    throw new TypeError(`Function readPackageJson expected type: string but received ${ typeof path } instead`);
   }
   return new Promise((resolve, reject) => {
     readFile(path + '/package.json', (err, data) => {
