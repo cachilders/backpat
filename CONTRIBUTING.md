@@ -33,7 +33,17 @@ your [pull requests](https://help.github.com/articles/creating-a-pull-request).
  * Trailing commas,
  * Avd abbr wrds.
 
- ## License
+# Contributors
+<!-- Contributors START
+Casey_Childers cachilders https://github.com/cachilders docs code prReview
+Eric_Churchill churchie317 https://github.com/churchie317 docs tests infra
+Contributors END -->
+<!-- Contributors table START -->
+| [![Casey Childers](https://avatars.githubusercontent.com/cachilders?s=100)<br /><sub>Casey Childers</sub>](https://github.com/cachilders)<br /> [💻](https://github.com/cachilders/backpat/commits?author=cachilders) 👀 | [![Eric Churchill](https://avatars.githubusercontent.com/churchie317?s=100)<br /><sub>Eric Churchill</sub>](https://github.com/churchie317)<br /> [⚠️](https://github.com/cachilders/backpat/commits?author=churchie317) 🚇 |
+| :---: | :---: |
+<!-- Contributors table END -->
 
- By contributing to Backpat, you agree that your contributions will be
- licensed under its MIT license.
+## License
+
+By contributing to Backpat, you agree that your contributions will be
+licensed under its MIT license.

@@ -70,5 +70,8 @@
       "pre-commit": "npm run validate"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "lodash": "^4.17.2",
+    "ramda": "^0.22.1"
+  }
 }
