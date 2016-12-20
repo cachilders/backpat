@@ -1,11 +1,26 @@
-import chai, { expect, beforeEach } from 'chai';
+import chai, { expect } from 'chai';
 import chaiSpies from 'chai-spies';
-import { NpmConfig, readPackageJson } from './helpers';
+import every from 'lodash/every';
+import {
+  NpmConfig,
+  readPackageJson,
+  rootDir,
+  fetchEachDependency,
+  fetchDependency
+} from './helpers';
 import { getNpmData } from './ramda';
 
 chai.use(chaiSpies);
 
 describe('Helpers', function() {
+
+  describe('rootDir', () => {
+
+    it('should be a string', () => {
+      expect(rootDir).to.be.a('string');
+    });
+
+  });
 
   describe('readPackageJson', () => {
 
@@ -106,4 +121,84 @@ describe('Helpers', function() {
     });
   });
 
+  describe('fetchEachDependency', () => {
+
+    const deps = {
+      "lodash": "4.17.2",
+      "ramda": "0.22.1"
+    };
+
+    it('should be a function', () => {
+      expect(fetchEachDependency).to.be.a('function');
+    });
+
+    it('should accept an object as its single parameter', () => {
+      expect(fetchEachDependency).to.have.length(1);
+      expect(() => fetchEachDependency(deps)).to.not.throw(TypeError);
+    });
+
+    it('should throw TypeError when not passed object', () => {
+      expect(() => fetchEachDependency('this is a string')).to.throw(TypeError);
+      expect(() => fetchEachDependency(42)).to.throw(TypeError);
+      expect(() => fetchEachDependency(true)).to.throw(TypeError);
+    });
+
+    it('should throw TypeError when passed an array', () => {
+      expect(() => fetchEachDependency([])).to.throw(TypeError);
+    });
+
+    it('should handle multiple dependencies', () => {
+      expect(fetchEachDependency(deps)).to.be.ok;
+    });
+
+    // TODO:
+    // it('should invoke readPackageJson for each dependency', () => {
+    //
+    // });
+
+    it('should return a promise object', () => {
+      expect(fetchEachDependency(deps)).to.be.an.instanceof(Promise);
+    });
+
+    it('should eventually return an array of promises', (done) => {
+      fetchEachDependency(deps).then((dependencies) => {
+        expect(dependencies).to.be.an.instanceof(Array);
+        done();
+      });
+    });
+
+    it('should eventually map dependencies to objects', (done) => {
+      fetchEachDependency(deps).then((dependencies) => {
+        expect(dependencies).to.have.length(2);
+        done();
+      });
+    });
+
+  });
+
+  describe('fetchDependency', () => {
+
+    it('should return a promise object', () => {
+      expect(fetchDependency('ramda')).to.be.an.instanceof(Promise);
+    });
+
+    it('should accept an string as its single parameter', () => {
+      expect(fetchDependency).to.have.length(1);
+      expect(() => fetchDependency('ramda')).to.not.throw(TypeError);
+    });
+
+    it('should fail when passed an argument that is not a string', () => {
+      expect(fetchDependency).to.throw(TypeError);
+      expect(() => fetchDependency([])).to.throw(TypeError);
+      expect(() => fetchDependency({})).to.throw(TypeError);
+    });
+
+    it('should eventually resolve to a dependency\'s package', (done) => {
+      fetchDependency('ramda').then((result) => {
+        expect(result).to.be.an('object');
+        done();
+      });
+    });
+
+  });
 });
