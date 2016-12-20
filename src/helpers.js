@@ -43,10 +43,10 @@ export const rootDir = process.cwd() + '/';
 
 export const readPackageJson = (f: Function, path: string = rootDir) => {
   if (typeof f !== 'function') {
-    throw new TypeError(`Expected type function but received ${ typeof f } instead`);
+    throw new TypeError(`Function readPackageJson expected type: function but received ${ typeof f } instead`);
   }
   if (typeof path !== 'string') {
-    throw new TypeError(`Expected type string but received ${ typeof f } instead`);
+    throw new TypeError(`Function readPackageJson expected type: string but received ${ typeof f } instead`);
   }
   return new Promise((resolve, reject) => {
     readFile(path + '/package.json', (err, data) => {
@@ -65,20 +65,19 @@ export const readPackageJson = (f: Function, path: string = rootDir) => {
 
 export function fetchEachDependency(dependencies: {}) {
   if (typeof dependencies !== 'object' || Array.isArray(dependencies)) {
-    throw new TypeError(`Expected type object but received ${ typeof dependencies } instead`);
+    throw new TypeError(`Function fetchEachDependency expected type: object but received ${ typeof dependencies } instead`);
   }
   return Promise.all(Object.keys(dependencies).map(fetchDependency));
 }
 
 export function fetchDependency(dependency: string) {
   if (typeof dependency !== 'string') {
-    throw new TypeError(`Expected type string but received ${ typeof dependency } instead`);
+    throw new TypeError(`Function fetchDependency expected type: string but received ${ typeof dependency } instead`);
   }
   return readPackageJson((next) => next, rootDir + 'node_modules/' + dependency);
 }
 
 // TODO: MAP new array using MakeDependency
-// TODO: WRITE tests for MakeDependency
 // TODO: REFACTOR to flowtype
 export function MakeDependency(dependency: { name: string, homepage: string, description: string, repository: { url: string } }) {
   return {
