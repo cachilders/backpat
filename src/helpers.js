@@ -2,12 +2,6 @@
 
 import https from 'https';
 import { readFile } from 'fs';
-import { has } from 'lodash/has';
-
-// var fs    = require('fs');
-//
-// var vars  = require('./index');
-//
 // import { formatVersionsAndFilterPrivate } from '';
 
 // module.exports = {
@@ -68,6 +62,32 @@ export const readPackageJson = (f: Function, path: string = rootDir) => {
     throw new Error(reason);
   });
 };
+
+export function fetchEachDependency(dependencies: {}) {
+  if (typeof dependencies !== 'object' || Array.isArray(dependencies)) {
+    throw new TypeError(`Expected type object but received ${ typeof dependencies } instead`);
+  }
+  return Promise.all(Object.keys(dependencies).map(fetchDependency));
+}
+
+export function fetchDependency(dependency: string) {
+  if (typeof dependency !== 'string') {
+    throw new TypeError(`Expected type string but received ${ typeof dependency } instead`);
+  }
+  return readPackageJson((next) => next, rootDir + 'node_modules/' + dependency);
+}
+
+// TODO: MAP new array using MakeDependency
+// TODO: WRITE tests for MakeDependency
+// TODO: REFACTOR to flowtype
+export function MakeDependency(dependency: { name: string, homepage: string, description: string, repository: { url: string } }) {
+  return {
+    name: dependency.name,
+    url: dependency.homepage || dependency.repository ?
+      dependency.repository.url.replace(/\w*\+/, '') : '',
+    description: dependency.description
+  };
+}
 
 export function NpmConfig(dependencies: {}) {
   return {
