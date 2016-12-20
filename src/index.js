@@ -1,7 +1,7 @@
 /* @flow */
 
 import has from 'lodash/has';
-import { formatVersionsAndFilterPrivate, getNpmData } from './ramda';
+import { formatVersionsAndFilterPrivate, getNpmData } from './utilities';
 import { readPackageJson } from './helpers';
 
 export function backpat(f: Function) {
