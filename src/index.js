@@ -1,43 +1,33 @@
 /* @flow */
 
-var fs           = require('fs');
-var EventEmitter = require('events');
-import { has } from 'lodash/has';
+import has from 'lodash/has';
 import { formatVersionsAndFilterPrivate, getNpmData } from './ramda';
-import { NpmConfig, httpsGetPromise } from './helpers';
+import { readPackageJson } from './helpers';
 
-exports.rootDir = process.cwd() + '/';
-exports.dependencies = {};
-exports.event = new EventEmitter();
-
-exports.backpat = function(callback: Function) {
-  if (typeof callback !== 'function') {
-    throw new TypeError('backpat should accept type function as input parameter');
+export function backpat(f: Function) {
+  if (typeof f !== 'function') {
+    throw new TypeError(`Expected type function but received ${ typeof f } instead`);
   }
-  fs.readFile(exports.rootDir + '/package.json', function(err, data) {
-    if (err) throw new Error(err);
-    var pkgjsn = JSON.parse(data.toString('utf8'));
-
-    if (has('dependencies', pkgjsn)) {
-      const deps = formatVersionsAndFilterPrivate(pkgjsn.dependencies);
-      getNpmData(deps);
+  return readPackageJson(f).then((packageJson) => {
+    const deps = {};
+    if (has(packageJson, 'dependencies')) {
+      deps.dependencies = formatVersionsAndFilterPrivate(packageJson.dependencies);
+      // Manually inject Node because it's certainly part of your stack
+      deps.dependencies.node = {
+        name        : 'Node.js',
+        version     : process.versions.node,
+        description : 'A JavaScript runtime ✨🐢🚀✨',
+        downloads   : 10000000 // A fake number since Node isn't downloaded on npm
+      };
     }
-
-    if (has('devDependencies', pkgjsn)) {
-      const devDeps = formatVersionsAndFilterPrivate(pkgjsn.dependencies);
-      getNpmData(devDeps);
+    if (has(packageJson, 'devDependencies')) {
+      deps.dependencies = formatVersionsAndFilterPrivate(packageJson.devDependencies);
     }
-
-    for (var k in exports.dependencies) {
-      helpers.gatherDetails(k);
-    }
-
-    // Manually inject Node because it's certainly part of your stack
-    exports.dependencies.node = {
-      name        : 'Node.js',
-      version     : process.versions.node,
-      description : 'A JavaScript runtime ✨🐢🚀✨',
-      downloads   : 10000000 // A fake number since Node isn't downloaded on npm
-    };
+    getNpmData(deps);
+    return deps;
   });
-};
+}
+
+// getNpmData(devDeps);
+  //
+  //
