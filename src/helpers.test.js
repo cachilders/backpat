@@ -1,12 +1,12 @@
 import chai, { expect } from 'chai';
 import chaiSpies from 'chai-spies';
-import every from 'lodash/every';
 import {
   NpmConfig,
   readPackageJson,
   rootDir,
   fetchEachDependency,
-  fetchDependency
+  fetchDependency,
+  MakeDependency
 } from './helpers';
 import { getNpmData } from './ramda';
 
@@ -198,6 +198,25 @@ describe('Helpers', function() {
         expect(result).to.be.an('object');
         done();
       });
+    });
+
+  });
+
+  describe('MakeDependency', () => {
+
+    const dependency = {
+      name: 'lodash',
+      url: 'https://lodash.com/',
+      description: 'Lodash modular utilities.',
+    };
+
+    it('should be a factory that returns an object', () => {
+      expect(MakeDependency).to.be.a('function');
+      expect(MakeDependency(dependency)).to.be.an('object');
+    });
+
+    it('should return the correct output', () => {
+      expect(MakeDependency(dependency)).to.have.all.keys('name', 'url', 'description');
     });
 
   });
