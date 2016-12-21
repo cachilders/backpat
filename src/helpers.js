@@ -21,7 +21,6 @@ export const readPackageJson = (f: Function, path: string = rootDir) => {
       }
     });
   })
-  .then(f)
   .catch((reason) => {
     throw new Error(reason);
   });
@@ -73,8 +72,6 @@ export function httpsGetPromise(opts: {}) {
     });
   });
 }
-
-// import { formatVersionsAndFilterPrivate } from '';
 
 // module.exports = {
 //   // Add modules and their versions to the dependencies object
