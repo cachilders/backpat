@@ -2,13 +2,13 @@
 
 import https from 'https';
 import { readFile } from 'fs';
+import { formatVersionsAndFilterPrivate } from './utilities';
 
 export const rootDir = process.cwd() + '/';
 
-export const readPackageJson = (f: Function, path: string = rootDir) => {
-  if (typeof f !== 'function') {
-    throw new TypeError(`Function readPackageJson expected type: function but received ${ typeof f } instead`);
-  }
+let temp = {};
+
+export const readPackageJson = (path: string = rootDir) => {
   if (typeof path !== 'string') {
     throw new TypeError(`Function readPackageJson expected type: string but received ${ typeof path } instead`);
   }
@@ -26,29 +26,51 @@ export const readPackageJson = (f: Function, path: string = rootDir) => {
   });
 };
 
-export function fetchEachDependency(dependencies: {}) {
+export function instantiateDependencies(packageJson: {}) {
+  return new Promise((resolve) => {
+    const dependencies = {};
+    Object.assign(dependencies,
+      packageJson.dependencies ? 
+        formatVersionsAndFilterPrivate(packageJson.dependencies) : null,
+      packageJson.devDependencies?
+        formatVersionsAndFilterPrivate(packageJson.devDependencies): null,
+    );
+    temp = dependencies;
+    resolve(dependencies);
+  });
+}
+
+export function fetchEachDependency(json: string) {
+  let dependencies = JSON.parse(json);
   if (typeof dependencies !== 'object' || Array.isArray(dependencies)) {
     throw new TypeError(`Function fetchEachDependency expected type: object but received ${ typeof dependencies } instead`);
   }
-  return Promise.all(Object.keys(dependencies).map(fetchDependency));
+  return Promise.all(Object.keys(dependencies).map(fetchDependency))
+  .then((properties) => {
+    properties.forEach((property) => {
+      Object.assign(dependencies[property.name], property);
+    });
+    return dependencies;
+  });
 }
 
 export function fetchDependency(dependency: string) {
   if (typeof dependency !== 'string') {
     throw new TypeError(`Function fetchDependency expected type: string but received ${ typeof dependency } instead`);
   }
-  return readPackageJson((next) => next, rootDir + 'node_modules/' + dependency);
+  return readPackageJson(rootDir + 'node_modules/' + dependency)
+  .then(resolveDependency);
 }
 
-// TODO: MAP new array using MakeDependency
-// TODO: REFACTOR to flowtype
-export function MakeDependency(dependency: { name: string, homepage: string, description: string, repository: { url: string } }) {
-  return {
-    name: dependency.name,
-    url: dependency.homepage || dependency.repository ?
-      dependency.repository.url.replace(/\w*\+/, '') : '',
-    description: dependency.description
-  };
+export function resolveDependency(dependency: { name: string, homepage: string, description: string, repository: { url: string } }) {
+  return new Promise((resolve) => {
+    resolve({
+      name: dependency.name,
+      url: dependency.homepage || dependency.repository ?
+        dependency.repository.url.replace(/\w*\+/, '') : '',
+      description: dependency.description
+    });
+  });
 }
 
 export function NpmConfig(dependencies: {}) {
@@ -73,37 +95,8 @@ export function httpsGetPromise(opts: {}) {
   });
 }
 
-// module.exports = {
-//   // Add modules and their versions to the dependencies object
-//   seedDependencies: function(obj: {}) {
-//     vars.dependencies = formatVersionsAndFilterPrivate(obj);
-//     module.exports.fetchModuleDownloads();
-//   },
-//
-//   // Fetch each module's package.json and add details from it
-//   gatherDetails: function(module: string) {
-//     var modulePath = vars.rootDir + 'node_modules/' + module + '/package.json';
-//     var dependency = vars.dependencies[module];
-//     fs.readFile(modulePath, function(err, data) {
-//       if (err) console.error(err);
-//       var details = JSON.parse(data.toString('utf8'));
-//       dependency.name = details.name;
-//       dependency.url = details.homepage || details.repository ?
-//         details.repository.url.replace(/\w*\+/, '') : '' ;
-//       dependency.description = details.description;
-//     });
-//   },
-
-  // Batch retrieve the npm download counts for all modules for the past month
-
-// httpsGetPromise.then((result) => {
-//   var resultObj = JSON.parse(result.toString('utf8'));
-//   Object.keys(resultObj).forEach(function(key) {
-//     if (vars.dependencies[key]) {
-//       vars.dependencies[key].downloads = resultObj[key] ?
-//       resultObj[key].downloads : null;
-//       outCount++;
-//     }
-//   });
-// })
-//
+export function assignNpmData(properties: string) {
+  let dependencies = JSON.parse(properties);
+  Object.assign(temp, dependencies);
+  return temp;
+}
