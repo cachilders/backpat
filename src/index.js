@@ -1,6 +1,6 @@
 /* @flow */
 
-import { getNpmData } from './utilities';
+import { getNpmData, curriedMerge, pickDownloads, addNode } from './utilities';
 import {
   readPackageJson,
   fetchEachDependency,
@@ -14,25 +14,13 @@ export function backpat(f: Function) {
     readPackageJson()
     .then(instantiateDependencies)
     .then((dependencies) => {
+      const merge = curriedMerge(dependencies);
       return getNpmData(dependencies)
-      .then((npmData) => {
-        Object.keys(npmData).forEach((key) => {
-          dependencies[key].downloads = npmData[key].downloads;
-        });
-        return dependencies;
-      });
+      .then(pickDownloads)
+      .then(merge);
     })
     .then(fetchEachDependency)
-    .then((dependencies) => {
-      dependencies.node = {
-        name        : 'Node.js',
-        url         : 'https://nodejs.org',
-        version     : process.versions.node,
-        description : 'A JavaScript runtime ✨🐢🚀✨',
-        downloads   : 10000000 // A fake number since Node isn't downloaded on npm
-      };
-      return dependencies;
-    })
+    .then(addNode)
     .then(f);
   });
 }
