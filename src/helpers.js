@@ -33,7 +33,6 @@ export function instantiateDependencies(packageJson: {}) {
       packageJson.devDependencies?
         formatVersionsAndFilterPrivate(packageJson.devDependencies): null,
     );
-    temp = dependencies;
     resolve(dependencies);
   });
 }
