@@ -6,8 +6,6 @@ import { formatVersionsAndFilterPrivate } from './utilities';
 
 export const rootDir = process.cwd() + '/';
 
-let temp = {};
-
 export const readPackageJson = (path: string = rootDir) => {
   if (typeof path !== 'string') {
     throw new TypeError(`Function readPackageJson expected type: string but received ${ typeof path } instead`);
@@ -40,8 +38,7 @@ export function instantiateDependencies(packageJson: {}) {
   });
 }
 
-export function fetchEachDependency(json: string) {
-  let dependencies = JSON.parse(json);
+export function fetchEachDependency(dependencies: {}) {
   if (typeof dependencies !== 'object' || Array.isArray(dependencies)) {
     throw new TypeError(`Function fetchEachDependency expected type: object but received ${ typeof dependencies } instead`);
   }
@@ -89,14 +86,8 @@ export function httpsGetPromise(opts: {}) {
     https.get(opts, (res) => {
       const body = [];
       res.on('data', (chunk) => body.push(chunk));
-      res.on('end', () => resolve(Buffer.concat(body).toString()));
+      res.on('end', () => resolve(JSON.parse(Buffer.concat(body).toString())));
       res.on('error', reject);
     });
   });
-}
-
-export function assignNpmData(properties: string) {
-  let dependencies = JSON.parse(properties);
-  Object.assign(temp, dependencies);
-  return temp;
 }

@@ -6,7 +6,7 @@ import {
   rootDir,
   fetchEachDependency,
   fetchDependency,
-  MakeDependency
+  resolveDependency
 } from './helpers';
 import { getNpmData } from './utilities';
 
@@ -24,35 +24,28 @@ describe('Helpers', function() {
 
   describe('readPackageJson', () => {
 
-    it('should be a function that accepts one argument and one optional argument', () => {
+    it('should be a function that accepts one optional argument', () => {
       expect(readPackageJson).to.be.a('function');
-      expect(readPackageJson.length).to.equal(1);
-      // TODO: TEST for optional argument
-    });
-
-    it('should throw TypeError when passed argument that is not a function', () => {
-      expect(readPackageJson).to.throw(TypeError);
-      expect(() => readPackageJson(42)).to.throw(TypeError);
-      expect(() => readPackageJson('bad input')).to.throw(TypeError);
+      expect(readPackageJson.length).to.equal(0);
     });
 
     it('should throw TypeError when passed argument that is not a string', () => {
-      expect(() => readPackageJson(() => {}, 42)).to.throw(TypeError);
+      expect(() => readPackageJson(42)).to.throw(TypeError);
     });
 
-    it('should return a promise object when passed callback', () => {
-      expect(readPackageJson(() => {})).to.be.an.instanceof(Promise);
+    it('should return a promise object', () => {
+      expect(() => readPackageJson().to.be.an.instanceof(Promise));
     });
 
     it('should throw error when path does not exist', (done) => {
-      readPackageJson(() => {}, '').catch((reason) => {
+      readPackageJson('').catch((reason) => {
         expect(reason).to.be.an.instanceof(Error);
         done();
       });
     });
 
     it('should return project\'s parsed package.json', (done) => {
-      readPackageJson((next) => next).then((pkg) => {
+      readPackageJson().then((pkg) => {
         expect(pkg).to.be.an('object');
         expect(pkg).to.contain.all.keys('name', 'description');
         expect(pkg).to.have.any.keys(
@@ -68,22 +61,11 @@ describe('Helpers', function() {
       });
     });
 
-    // SPY on basic function
-    const spy = chai.spy(() => {});
-
-    it('should invoke callback function', (done) => {
-      expect(spy).to.be.spy;
-      readPackageJson(spy).then(() => {
-        expect(spy).to.have.been.called.at.least(1);
-        done();
-      });
-    });
-
   });
 
   const deps = {
-    "lodash": "4.17.2",
-    "ramda": "0.22.1"
+    "lodash": { version: "4.17.2" },
+    "ramda": { version: "0.22.1" }
   };
 
   describe('NpmConfig', () => {
@@ -112,10 +94,9 @@ describe('Helpers', function() {
     it('should make an https GET request', (done) => {
       // const config = NpmConfig(deps);
       getNpmData(deps).then( (result) => {
-        const response = JSON.parse(result);
-        expect(response).to.be.an('object');
-        expect(response.lodash).to.have.all.keys('downloads', 'start', 'end', 'package');
-        expect(response.ramda).to.have.all.keys('downloads', 'start', 'end', 'package');
+        expect(result).to.be.an('object');
+        expect(result.lodash).to.have.any.keys('downloads');
+        expect(result.ramda).to.have.any.keys('downloads');
         done();
       });
     });
@@ -124,8 +105,8 @@ describe('Helpers', function() {
   describe('fetchEachDependency', () => {
 
     const deps = {
-      "lodash": "4.17.2",
-      "ramda": "0.22.1"
+      "lodash": { version: "4.17.2" },
+      "ramda": { version: "0.22.1" }
     };
 
     it('should be a function', () => {
@@ -160,16 +141,16 @@ describe('Helpers', function() {
       expect(fetchEachDependency(deps)).to.be.an.instanceof(Promise);
     });
 
-    it('should eventually return an array of promises', (done) => {
+    it('should eventually return an object', (done) => {
       fetchEachDependency(deps).then((dependencies) => {
-        expect(dependencies).to.be.an.instanceof(Array);
+        expect(dependencies).to.be.an('object');
         done();
       });
     });
 
     it('should eventually map dependencies to objects', (done) => {
       fetchEachDependency(deps).then((dependencies) => {
-        expect(dependencies).to.have.length(2);
+        expect(Object.keys(dependencies)).to.have.length(2);
         done();
       });
     });
@@ -202,7 +183,7 @@ describe('Helpers', function() {
 
   });
 
-  describe('MakeDependency', () => {
+  describe('resolveDependency', () => {
 
     const dependency = {
       name: 'lodash',
@@ -210,13 +191,16 @@ describe('Helpers', function() {
       description: 'Lodash modular utilities.',
     };
 
-    it('should be a factory that returns an object', () => {
-      expect(MakeDependency).to.be.a('function');
-      expect(MakeDependency(dependency)).to.be.an('object');
+    it('should return a promise', () => {
+      expect(resolveDependency).to.be.a('function');
+      expect(resolveDependency(dependency)).to.be.an.instanceof(Promise);
     });
 
-    it('should return the correct output', () => {
-      expect(MakeDependency(dependency)).to.have.all.keys('name', 'url', 'description');
+    it('should eventually return the correct output', (done) => {
+      resolveDependency(dependency).then((result) => {
+        expect(result).to.have.all.keys('name', 'url', 'description');
+        done();
+      });
     });
 
   });
