@@ -1,5 +1,5 @@
 let util = require('util');
-let backpat = require('./src/index').backpat;
+let backpat = require('./dist/index').backpat;
 
 // Run this script to test Backpat's output
 
