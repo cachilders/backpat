@@ -4,6 +4,7 @@
   "description": "A simple tool for high-fiving your tech stack",
   "main": "dist/index.js",
   "scripts": {
+    "prepublish": "npm run build",
     "prebuild": "rimraf dist",
     "build": "npm-run-all --parallel build:*",
     "build:main": "babel --out-dir dist --ignore *.test.js src",

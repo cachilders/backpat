@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased (0.6.0 candidate)
+### Added
+- Configure for streamlined publication
+### Changed
+- Refactor codebase to promise syntax
+
 ## 0.5.1 - 2016-12-15
 ### Added
 - More robust docs, including contribution and issue reporting guidelines
