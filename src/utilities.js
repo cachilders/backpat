@@ -6,6 +6,13 @@ const addVersionProp = (v, k, o) => o[k] = { 'version': removeCaret(v) };
 const isNotPrivate = R.compose(R.not, R.prop('private'));
 const deeplyMerge = (obj1, obj2) => R.mapObjIndexed((v, k, o) => R.merge(obj1[k], obj2[k]), obj1);
 
+export default {
+  removeCaret: removeCaret,
+  addVersionProp: addVersionProp,
+  isNotPrivate: isNotPrivate,
+  deeplyMerge: deeplyMerge
+};
+
 export const formatVersions = R.mapObjIndexed(addVersionProp);
 export const curriedMerge = R.curry(deeplyMerge);
 export const getNpmData = R.compose(httpsGetPromise, NpmConfig);
