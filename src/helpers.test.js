@@ -6,7 +6,9 @@ import {
   rootDir,
   fetchEachDependency,
   fetchDependency,
-  resolveDependency
+  resolveDependency,
+  addNode,
+  nodeDetails
 } from './helpers';
 import { getNpmData } from './utilities';
 
@@ -15,11 +17,15 @@ chai.use(chaiSpies);
 describe('Helpers', function() {
 
   describe('rootDir', () => {
-
     it('should be a string', () => {
       expect(rootDir).to.be.a('string');
     });
+  });
 
+  describe('nodeDetails', () => {
+    it('should be an object', () => {
+      expect(nodeDetails).to.be.an('object');
+    });
   });
 
   describe('readPackageJson', () => {
@@ -204,4 +210,11 @@ describe('Helpers', function() {
     });
 
   });
+
+  describe('addNode', () => {
+    it('should be a function', () => {
+      expect(addNode).to.be.a('function');
+    });
+  });
+
 });

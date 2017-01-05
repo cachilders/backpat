@@ -2,8 +2,7 @@ import chai, { expect } from 'chai';
 import {
   pickDownloads,
   curriedMerge,
-  formatVersionsAndFilterPrivate,
-  addNode
+  formatVersionsAndFilterPrivate
 } from './utilities';
 
 describe('Utilities', () => {
@@ -23,12 +22,6 @@ describe('Utilities', () => {
   describe('formatVersionsAndFilterPrivate', () => {
     it('should be a function', () => {
       expect(formatVersionsAndFilterPrivate).to.be.a('function');
-    });
-  });
-
-  describe('addNode', () => {
-    it('should be a function', () => {
-      expect(addNode).to.be.a('function');
     });
   });
 

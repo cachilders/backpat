@@ -1,10 +1,12 @@
 /* @flow */
 
-import { getNpmData, curriedMerge, pickDownloads, addNode } from './utilities';
+import { getNpmData, curriedMerge, pickDownloads } from './utilities';
 import {
   readPackageJson,
   fetchEachDependency,
-  instantiateDependencies } from './helpers';
+  instantiateDependencies,
+  addNode
+ } from './helpers';
 
 export function backpat(f: Function) {
   if (typeof f !== 'function') {
