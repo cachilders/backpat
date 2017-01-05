@@ -2,9 +2,18 @@
 
 import https from 'https';
 import { readFile } from 'fs';
-import { formatVersionsAndFilterPrivate } from './utilities';
+import { formatVersions } from './utilities';
 
 export const rootDir = process.cwd() + '/';
+export const nodeDetails = {
+  node: {
+    name        : 'Node.js',
+    url         : 'https://nodejs.org',
+    version     : process.versions.node,
+    description : 'A JavaScript runtime ✨🐢🚀✨',
+    downloads   : 10000000 // A fake number since Node isn't downloaded on npm
+  }
+};
 
 export const readPackageJson = (path: string = rootDir) => {
   if (typeof path !== 'string') {
@@ -29,9 +38,9 @@ export function instantiateDependencies(packageJson: {}) {
     const dependencies = {};
     Object.assign(dependencies,
       packageJson.dependencies ? 
-        formatVersionsAndFilterPrivate(packageJson.dependencies) : null,
-      packageJson.devDependencies?
-        formatVersionsAndFilterPrivate(packageJson.devDependencies): null,
+        formatVersions(packageJson.dependencies) : null,
+      packageJson.devDependencies ?
+        formatVersions(packageJson.devDependencies): null,
     );
     resolve(dependencies);
   });
@@ -90,3 +99,5 @@ export function httpsGetPromise(opts: {}) {
     });
   });
 }
+
+export const addNode = (dependencies: {}) => Object.assign({}, dependencies, nodeDetails);

@@ -4,11 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased (0.6.0 candidate)
+## 0.6.0 - 2017-1-5
 ### Added
-- Configure for streamlined publication
+- Configured for streamlined publication
+- Implemented Ramda library for functional coding techniques
 ### Changed
-- Refactor codebase to promise syntax
+- **Breaking: backpat now returns a promise that resolves into an object–so no more callback**
+- Updated README
+- Refactored codebase to promise syntax
 
 ## 0.5.1 - 2016-12-15
 ### Added
