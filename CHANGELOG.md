@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased (0.6.0 candidate)
 ### Added
-- Configure for streamlined publication
+- Configured for streamlined publication
+- Implemented Ramda library for functional coding techniques
 ### Changed
-- Refactor codebase to promise syntax
+- Breaking: backpat now returns a promise that resolves into an object–so no more callback
+- Updated README
+- Refactored codebase to promise syntax
 
 ## 0.5.1 - 2016-12-15
 ### Added
