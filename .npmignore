@@ -1,3 +1,25 @@
+# This is still in development. Attempting to strip the npm package to its barest possible.
+
+# Test configs
+test
+
+# Misc Dev Configs
+.babelrc
+.eslintrc.js
+.flowconfig
+.gitignore
+.hound.yml
+.travis.yml
+.npmignore
+
+# Source
+src
+
+# Dev docs
+CODE-OF-CONDUCT.md
+CONTRIBUTING.md
+ISSUE_TEMPLATE.md
+
 # Logs
 logs
 *.log
