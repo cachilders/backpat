@@ -16,10 +16,10 @@ Require it like so:
 const backpat = require('backpat').backpat;
 ```
 
-**As of v6.0**: Invoke it thusly:
+**As of v0.6.0**: Invoke it thusly:
 
 ```javascript
-backpat().then(...do stuff with it here...)
+backpat().then('do stuff with it here');
 ```
 
 And it will parse your project's ```package.json```, identifying all production
