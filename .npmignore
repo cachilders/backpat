@@ -38,3 +38,6 @@ jspm_packages
 
 # VS Code configs
 .vscode
+
+# Dev run script
+runner.js

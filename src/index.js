@@ -8,11 +8,8 @@ import {
   addNode
  } from './helpers';
 
-export function backpat(f: Function) {
-  if (typeof f !== 'function') {
-    throw new TypeError(`Function backpat expected input type: function but received ${ typeof f } instead`);
-  }
-  return new Promise(() => {
+export function backpat() {
+  return new Promise((resolve) => {
     readPackageJson()
     .then(instantiateDependencies)
     .then((dependencies) => {
@@ -23,6 +20,7 @@ export function backpat(f: Function) {
     })
     .then(fetchEachDependency)
     .then(addNode)
-    .then(f);
+    .then((dependencies) => resolve(dependencies))
+    .catch(console.error);
   });
 }
