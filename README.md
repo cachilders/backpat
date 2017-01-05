@@ -19,7 +19,7 @@ const backpat = require('backpat').backpat;
 **As of v6.0**: Invoke it thusly:
 
 ```javascript
-backpat();
+backpat().then(...do stuff with it here...)
 ```
 
 And it will parse your project's ```package.json```, identifying all production
