@@ -6,6 +6,7 @@ test
 # Misc Dev Configs
 .babelrc
 .eslintrc.js
+.eslintrc
 .flowconfig
 .gitignore
 .hound.yml
