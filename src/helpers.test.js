@@ -4,6 +4,7 @@ import {
   NpmConfig,
   readPackageJson,
   rootDir,
+  instantiateDependencies,
   fetchEachDependency,
   fetchDependency,
   resolveDependency,
@@ -65,6 +66,60 @@ describe('Helpers', function() {
         );
         done();
       });
+    });
+
+  });
+
+  describe('instantiateDependencies', () => {
+
+    const deps = {
+      dependencies: {
+        flashy: '^3.5.0', stuff: '^0.7.1'
+      }
+    };
+
+    const devDeps = {
+      devDependencies: {
+        chai: '^3.5.0', coveralls: '^2.11.15'
+      }
+    };
+
+    it('should be a function', () => {
+      expect(instantiateDependencies).to.be.a('function');
+    });
+
+    it('should return a promise when passed an object', () => {
+      expect(instantiateDependencies(deps)).to.be.an.instanceof(Promise);
+    });
+
+    it('returned promise should eventually resolve into an object', (done) => {
+      instantiateDependencies({})
+      .then((result) => expect(result).to.be.an('object'));
+      done();
+    });
+
+    it('resolved promise should be an empty object when provided no \'dependencies\' or \'devDependencies\' keys', (done) => {
+      instantiateDependencies({})
+      .then((result) => expect(result).to.have.all.keys([]));
+      done();
+    });
+
+    it('resolved promise should be an object when given only \'dependencies\'', (done) => {
+      instantiateDependencies(deps)
+      .then((result) => expect(result).to.have.all.keys(['flashy', 'stuff']));
+      done();
+    });
+
+    it('resolved promise should be an object when given only \'devDependencies\'', (done) => {
+      instantiateDependencies(devDeps)
+      .then((result) => expect(result).to.have.all.keys(['chai', 'coveralls']));
+      done();
+    });
+
+    it('resolved promise should be an object when given both \'dependencies\' and \'devDependencies\'', (done) => {
+      instantiateDependencies(Object.assign(deps, devDeps))
+      .then((result) => expect(result).to.have.all.keys(['flashy', 'stuff', 'chai', 'coveralls']));
+      done();
     });
 
   });

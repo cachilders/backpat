@@ -5,6 +5,7 @@ import {
   readPackageJson,
   fetchEachDependency,
   instantiateDependencies,
+  filterPrivate,
   addNode
  } from './helpers';
 
@@ -19,6 +20,7 @@ export function backpat() {
       .then(merge);
     })
     .then(fetchEachDependency)
+    .then(filterPrivate)
     .then(addNode)
     .then((dependencies) => resolve(dependencies))
     .catch(console.error);

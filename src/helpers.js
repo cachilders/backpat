@@ -2,7 +2,7 @@
 
 import https from 'https';
 import { readFile } from 'fs';
-import { formatVersionsAndFilterPrivate } from './utilities';
+import { formatVersions } from './utilities';
 
 export const rootDir = process.cwd() + '/';
 export const nodeDetails = {
@@ -38,9 +38,9 @@ export function instantiateDependencies(packageJson: {}) {
     const dependencies = {};
     Object.assign(dependencies,
       packageJson.dependencies ? 
-        formatVersionsAndFilterPrivate(packageJson.dependencies) : null,
-      packageJson.devDependencies?
-        formatVersionsAndFilterPrivate(packageJson.devDependencies): null,
+        formatVersions(packageJson.dependencies) : null,
+      packageJson.devDependencies ?
+        formatVersions(packageJson.devDependencies): null,
     );
     resolve(dependencies);
   });
