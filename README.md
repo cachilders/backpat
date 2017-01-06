@@ -1,4 +1,4 @@
-# Backpat [![Build Status](https://img.shields.io/travis/cachilders/backpat/master.svg)](https://travis-ci.org/cachilders/backpat) [![Coverage Status](https://coveralls.io/repos/github/cachilders/backpat/badge.svg?branch=master)](https://coveralls.io/github/cachilders/backpat?branch=master)
+# Backpat [![Build Status](https://travis-ci.org/cachilders/backpat.svg?branch=master)](https://travis-ci.org/cachilders/backpat) [![Coverage Status](https://coveralls.io/repos/github/cachilders/backpat/badge.svg?branch=master)](https://coveralls.io/github/cachilders/backpat?branch=master)
 
 Backpat is a simple tool for use in automating the production of tech stack
 notes in projects. Think along the lines of About pages with links for crediting
@@ -10,21 +10,21 @@ Install it as such:
 $ npm install --save backpat
 ```
 
-As of v0.4.0: Require it like so:
+Require it like so:
 
 ```javascript
 const backpat = require('backpat').backpat;
 ```
 
-Invoke it thusly:
+**As of v0.6.0**: Invoke it thusly:
 
 ```javascript
-backpat(callback);
+backpat().then('do stuff with it here');
 ```
 
 And it will parse your project's ```package.json```, identifying all production
-and developer dependencies and fetching the particulars of each. What you'll
-get back is an object like this, if considerably more robust.
+and developer dependencies and fetching the particulars of each. **What you'll
+get back is a promise** that will eventually resolve into an object like this:
 
 ```javascript
 { eslint:
@@ -41,12 +41,7 @@ get back is an object like this, if considerably more robust.
      downloads: 4001598 }}
 ```
 
-Simple as that. The npm download count attribute makes filtering the results
-a snap.
+Simple as that. The npm download count attribute makes ranking and filtering the
+results a snap.
 
-Worth noting: the whole shebang is async – so don't worry if you've got kitchen-
-sink-grade dependencies.
-
-This is a nascent module that is bound to require some TLC. If you encounter
-any rough edges, please don't hesitate to drop me a line. Oh, and _feel free to
-submit at PR_. There's still much to be done.
+That's it. _Feel free to submit an issue or PR_.

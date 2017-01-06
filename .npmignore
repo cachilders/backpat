@@ -1,10 +1,29 @@
+# This is still in development. Attempting to strip the npm package to its barest possible.
+
+# Test configs
+test
+
+# Misc Dev Configs
+.babelrc
+.eslintrc.js
+.eslintrc
+.flowconfig
+.gitignore
+.hound.yml
+.travis.yml
+.npmignore
+
+# Source
+src
+
+# Dev docs
+CODE-OF-CONDUCT.md
+CONTRIBUTING.md
+ISSUE_TEMPLATE.md
+
 # Logs
 logs
 *.log
-npm-debug.log*
-
-# Babel production build
-dist
 
 # Runtime data
 pids
@@ -21,14 +40,8 @@ coverage
 # nyc test coverage
 .nyc_output
 
-# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
-.grunt
-
 # node-waf configuration
 .lock-wscript
-
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
 
 # Dependency directories
 node_modules
@@ -46,5 +59,8 @@ jspm_packages
 # Output of 'npm pack'
 *.tgz
 
-# VS Code
+# VS Code configs
 .vscode
+
+# Dev run script
+runner.js

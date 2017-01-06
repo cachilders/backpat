@@ -1,9 +1,10 @@
 {
   "name": "backpat",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "A simple tool for high-fiving your tech stack",
   "main": "dist/index.js",
   "scripts": {
+    "prepublish": "npm run build",
     "prebuild": "rimraf dist",
     "build": "npm-run-all --parallel build:*",
     "build:main": "babel --out-dir dist --ignore *.test.js src",
@@ -39,6 +40,7 @@
     "eslint": "^3.8.1",
     "eslint-plugin-flowtype": "^2.25.0",
     "ghooks": "^1.3.2",
+    "lodash": "^4.17.2",
     "mocha": "^3.1.2",
     "npm-run-all": "^3.1.2",
     "nyc": "^10.0.0",
@@ -70,5 +72,7 @@
       "pre-commit": "npm run validate"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "ramda": "^0.22.1"
+  }
 }
