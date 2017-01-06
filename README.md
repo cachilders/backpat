@@ -1,4 +1,4 @@
-# Backpat [![Build Status](https://travis-ci.org/cachilders/backpat.svg?branch=master)](https://travis-ci.org/cachilders/backpat) [![Coverage Status](https://coveralls.io/repos/github/cachilders/backpat/badge.svg?branch=master)](https://coveralls.io/github/cachilders/backpat?branch=master)
+# Backpat [![Build Status](https://travis-ci.org/cachilders/backpat.svg?branch=master)](https://travis-ci.org/cachilders/backpat) [![Coverage Status](https://img.shields.io/coveralls/cachilders/backpat.svg)](https://img.shields.io/coveralls/cachilders/backpat.svg)
 
 Backpat is a simple tool for use in automating the production of tech stack
 notes in projects. Think along the lines of About pages with links for crediting
