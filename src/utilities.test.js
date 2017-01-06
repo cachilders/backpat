@@ -1,9 +1,13 @@
 import { expect } from 'chai';
-import utilities, {
+import {
   pickDownloads,
   curriedMerge,
   formatVersions,
-  filterPrivate
+  filterPrivate,
+  removeCaret,
+  addVersionProp,
+  isNotPrivate,
+  deeplyMerge
 } from './utilities';
 
 describe('Utilities', () => {
@@ -11,19 +15,19 @@ describe('Utilities', () => {
   describe('removeCarat', () => {
 
     it('should be a function', () => {
-      expect(utilities.removeCaret).to.be.a('function');
+      expect(removeCaret).to.be.a('function');
     });
 
     it('should return a string when provided a string', () => {
-      expect(utilities.removeCaret('^3.5.0')).to.be.a('string');
+      expect(removeCaret('^3.5.0')).to.be.a('string');
     });
 
     it('should return a string with first caret removed', () => {
-      expect(utilities.removeCaret('s^tring')).to.equal('string');
+      expect(removeCaret('s^tring')).to.equal('string');
     });
 
     it('should be caret agnostic re: strings', () => {
-      expect(utilities.removeCaret('string')).to.equal('string');
+      expect(removeCaret('string')).to.equal('string');
     });
 
   });
@@ -31,22 +35,22 @@ describe('Utilities', () => {
   describe('addVersionProp', () => {
 
     it('should be a function', () => {
-      expect(utilities.addVersionProp).to.be.a('function');
+      expect(addVersionProp).to.be.a('function');
     });
 
     // TODO: This one is a little reliant on the calling mapObjIndexed function. Requires a little
     // consideration, but the core functionality is presently tested via formatVersions.
 
     // it('should return an object when passed an object', () => {
-    //   expect(utilities.addVersionProp(dep)).to.be.an('object');
+    //   expect(addVersionProp(dep)).to.be.an('object');
     // });
 
     // it('should return an empty object when passed an empty object', () => {
-    //   expect(utilities.addVersionProp({})).to.have.all.keys([]);
+    //   expect(addVersionProp({})).to.have.all.keys([]);
     // });
 
     // it('returned object should contain nested object with version key when passed dependency', () => {
-    //   expect(utilities.addVersionProp(dep).chai).to.have.all.keys(['version']);
+    //   expect(addVersionProp(dep).chai).to.have.all.keys(['version']);
     // });
 
   });
@@ -54,7 +58,7 @@ describe('Utilities', () => {
   describe('isNotPrivate', () => {
 
     it('should be a function', () => {
-      expect(utilities.isNotPrivate).to.be.a('function');
+      expect(isNotPrivate).to.be.a('function');
     });
 
     // TODO: Tangentially tested as aspect of filterPrivate
@@ -64,7 +68,7 @@ describe('Utilities', () => {
   describe('deeplyMerge', () => {
 
     it('should be a function', () => {
-      expect(utilities.deeplyMerge).to.be.a('function');
+      expect(deeplyMerge).to.be.a('function');
     });
 
     // TODO: Tangentially tested as core function of curriedMerge
