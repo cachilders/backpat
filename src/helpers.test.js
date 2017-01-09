@@ -246,20 +246,78 @@ describe('Helpers', function() {
 
   describe('resolveDependency', () => {
 
-    const dependency = {
+    const dependency1 = {
       name: 'lodash',
-      url: 'https://lodash.com/',
+      repository: {url: 'https://lodash.com/'},
       description: 'Lodash modular utilities.',
+    };
+
+    const dependency2 = {
+      name: 'style-loader',
+      repository: {url: 'ssh://git@github.com/webpack/style-loader.git'},
+      description: 'file loader module for webpack',
+    };
+
+    const dependency3 = {
+      name: 'shrg',
+      repository: {url: 'shrg.biz'},
+      description: 'shrug it off',
+    };
+
+    const dependency4 = {
+      name: 'sass-loader',
+      repository: {url: 'git://github.com/jtangelder/sass-loader.git'},
+      description: 'Sass loader for webpack',
+    };
+
+    const dependency5 = {
+      name: 'doubleshrg',
+      description: 'nope.nope',
     };
 
     it('should return a promise', () => {
       expect(resolveDependency).to.be.a('function');
-      expect(resolveDependency(dependency)).to.be.an.instanceof(Promise);
+      expect(resolveDependency(dependency1)).to.be.an.instanceof(Promise);
     });
 
     it('should eventually return the correct output', (done) => {
-      resolveDependency(dependency).then((result) => {
+      resolveDependency(dependency1).then((result) => {
         expect(result).to.have.all.keys('name', 'url', 'description');
+        done();
+      });
+    });
+
+    it('should adequately process standard URL patterns', (done) => {
+      resolveDependency(dependency1).then((result) => {
+        expect(result.url).to.equal('https://lodash.com/');
+        done();
+      });
+    });
+
+    it('should adequately process ssh URL patterns', (done) => {
+      resolveDependency(dependency2).then((result) => {
+        expect(result.url).to.equal('https://github.com/webpack/style-loader');
+        done();
+      });
+    });
+
+    it('should adequately process minimal URL patterns', (done) => {
+      resolveDependency(dependency3).then((result) => {
+        expect(result.url).to.equal('https://shrg.biz');
+        done();
+      });
+    });
+
+    it('should adequately process git URL patterns', (done) => {
+      resolveDependency(dependency4).then((result) => {
+        expect(result.url).to.equal('https://github.com/jtangelder/sass-loader');
+        done();
+      });
+    });
+
+    it('should return blank URL value in absence of URL string', (done) => {
+      resolveDependency(dependency5).then((result) => {
+        expect(result.url).to.equal('');
         done();
       });
     });
