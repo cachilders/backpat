@@ -72,7 +72,7 @@ export function resolveDependency(dependency: { name: string, homepage: string, 
     resolve({
       name: dependency.name,
       url: dependency.homepage || dependency.repository ?
-        dependency.repository.url.replace(/\w*\+/, '') : '',
+        'https://' + dependency.repository.url.replace(/\w*.*\:\/\/|git@|\.git/g, '') : '',
       description: dependency.description
     });
   });
