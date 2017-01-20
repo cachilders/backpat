@@ -20,16 +20,35 @@ export const readPackageJson = (path: string = rootDir) => {
     throw new TypeError(`Function readPackageJson expected type: string but received ${ typeof path } instead`);
   }
   return new Promise((resolve, reject) => {
-    readFile(path + '/package.json', (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(JSON.parse(data.toString()));
-      }
-    });
+    readFile(`${path}/package.json`, (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(JSON.parse(data.toString()));
+        }
+      });
   })
   .catch((reason) => {
     throw new Error(reason);
+  });
+};
+
+export const readYarnLock = (path: string = rootDir) => {
+  return new Promise((resolve) => {
+    readFile(`${path}/yarn.lock`, (err, data) => {
+      if (err) {
+        resolve({yarnDependencies: {}});
+      } else {
+        const lockArray = data.toString().match(/\w.*\@.*(?=:)/g);
+        const yarnDeps = {
+          yarnDependencies: lockArray.reduce((deps, dep) => {
+            deps[dep.replace(/\@.*/, '')] = dep.replace(/.*[\@\^\~\=\>\<]/, '');
+            return deps;
+          }, {}),
+        };
+        resolve(yarnDeps);
+      }
+    });
   });
 };
 
@@ -41,6 +60,8 @@ export function instantiateDependencies(packageJson: {}) {
         formatVersions(packageJson.dependencies) : null,
       packageJson.devDependencies ?
         formatVersions(packageJson.devDependencies): null,
+      packageJson.yarnDependencies ?
+        formatVersions(packageJson.yarnDependencies): null,
     );
     resolve(dependencies);
   });

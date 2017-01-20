@@ -1,17 +1,18 @@
 /* @flow */
 
-import { getNpmData, curriedMerge, pickDownloads } from './utilities';
+import { getNpmData, curriedMerge, pickDownloads, filterPrivate, } from './utilities';
 import {
   readPackageJson,
   fetchEachDependency,
   instantiateDependencies,
-  filterPrivate,
+  readYarnLock,
   addNode
  } from './helpers';
 
 export function backpat() {
   return new Promise((resolve) => {
-    readPackageJson()
+    Promise.all([readPackageJson(), readYarnLock()])
+    .then((result) => Object.assign({}, ...result))
     .then(instantiateDependencies)
     .then((dependencies) => {
       const merge = curriedMerge(dependencies);
