@@ -1,6 +1,10 @@
 /* @flow */
 
-import { getNpmData, curriedMerge, pickDownloads, filterPrivate, } from './utilities';
+import {
+  getNpmData,
+  curriedMerge,
+  pickDownloads,
+  filterPrivate } from './utilities';
 import {
   readPackageJson,
   fetchEachDependency,
