@@ -11,29 +11,30 @@ export const nodeDetails = {
     url         : 'https://nodejs.org',
     version     : process.versions.node,
     description : 'A JavaScript runtime ✨🐢🚀✨',
-    downloads   : 10000000 // A fake number since Node isn't downloaded on npm
+    downloads   : 100000000 // A fake number since Node isn't downloaded on npm
   }
 };
 
-export const readPackageJson = (path: string = rootDir) => {
+export const readPackageJson = (path: string = rootDir, dependency) => {
   if (typeof path !== 'string') {
     throw new TypeError(`Function readPackageJson expected type: string but received ${ typeof path } instead`);
   }
+  if (dependency) path = path + dependency;
   return new Promise((resolve, reject) => {
     readFile(`${path}/package.json`, (err, data) => {
         if (err) {
-          reject(err);
+          resolve({name: dependency});
         } else {
           resolve(JSON.parse(data.toString()));
         }
       });
-  })
-  .catch((reason) => {
-    throw new Error(reason);
   });
 };
 
 export const readYarnLock = (path: string = rootDir) => {
+  if (typeof path !== 'string') {
+    throw new TypeError(`Function readYarnLock expected type: string but received ${ typeof path } instead`);
+  }
   return new Promise((resolve) => {
     readFile(`${path}/yarn.lock`, (err, data) => {
       if (err) {
@@ -84,7 +85,7 @@ export function fetchDependency(dependency: string) {
   if (typeof dependency !== 'string') {
     throw new TypeError(`Function fetchDependency expected type: string but received ${ typeof dependency } instead`);
   }
-  return readPackageJson(rootDir + 'node_modules/' + dependency)
+  return readPackageJson(rootDir + 'node_modules/', dependency)
   .then(resolveDependency);
 }
 
@@ -92,33 +93,56 @@ export function resolveDependency(dependency: { name: string, homepage: string, 
   return new Promise((resolve) => {
     resolve({
       name: dependency.name,
-      url: dependency.homepage || dependency.repository ?
-        'https://' + dependency.repository.url.replace(/\w*.*\:\/\/|git@|\.git/g, '') : '',
+      url: dependency.homepage || (dependency.repository && dependency.repository.url ?
+        'https://' + dependency.repository.url.replace(/\w*.*\:\/\/|git@|\.git/g, '') : ''),
       description: dependency.description
     });
   });
 }
 
-export function NpmConfig(dependencies: {}) {
-  return {
-    hostname: 'api.npmjs.org',
-    path: '/downloads/point/last-month/' + Object.keys(dependencies).join(','),
-    method: 'GET',
-    headers: {
-      'User-Agent': 'cachilders/backpat'
-    }
-  };
+export function chopDependencies(depChunk: [], depChunks: [] = []) {
+  if (depChunk.length === 0) return depChunks;
+  if (depChunk.length < 100) {
+    depChunks.push(depChunk.join(','));
+    return depChunks;
+  }
+  depChunks.push(depChunk.slice(0, 100).join(','));
+  chopDependencies(depChunk.slice(100), depChunks);
+  return depChunks;
 }
 
-export function httpsGetPromise(opts: {}) {
-  return new Promise((resolve, reject) => {
-    https.get(opts, (res) => {
-      const body = [];
-      res.on('data', (chunk) => body.push(chunk));
-      res.on('end', () => resolve(JSON.parse(Buffer.concat(body).toString())));
-      res.on('error', reject);
+export function NpmConfig(dependencies: {}) {
+  const deps = Object.keys(dependencies);
+  const depChunks = chopDependencies(deps);
+
+  return depChunks.reduce((optsArray, depChunk) => {
+    optsArray.push({
+      hostname: 'api.npmjs.org',
+      path: '/downloads/point/last-month/' + depChunk,
+      method: 'GET',
+      headers: {
+        'User-Agent': 'cachilders/backpat'
+      }
     });
-  });
+    return optsArray;
+  }, []);
+}
+
+export function httpsGetPromise(optsArray: []) {
+  const promiseArray = optsArray.reduce((promises, opts) => {
+    promises.push(new Promise((resolve, reject) => {
+      https.get(opts, (res) => {
+        const body = [];
+        res.on('data', (chunk) => body.push(chunk));
+        res.on('end', () => resolve(JSON.parse(Buffer.concat(body).toString())));
+        res.on('error', reject);
+      });
+    }));
+    return promises;
+  }, []);
+  return Promise.all(promiseArray)
+    .then((results) => Object.assign({}, ...results))
+    .catch(console.error);
 }
 
 export const addNode = (dependencies: {}) => Object.assign({}, dependencies, nodeDetails);

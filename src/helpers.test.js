@@ -3,13 +3,15 @@ import chaiSpies from 'chai-spies';
 import {
   NpmConfig,
   readPackageJson,
+  readYarnLock,
   rootDir,
   instantiateDependencies,
   fetchEachDependency,
   fetchDependency,
   resolveDependency,
   addNode,
-  nodeDetails
+  nodeDetails,
+  chopDependencies
 } from './helpers';
 import { getNpmData } from './utilities';
 
@@ -31,7 +33,7 @@ describe('Helpers', function() {
 
   describe('readPackageJson', () => {
 
-    it('should be a function that accepts one optional argument', () => {
+    it('should be a function that accepts two optional arguments', () => {
       expect(readPackageJson).to.be.a('function');
       expect(readPackageJson.length).to.equal(0);
     });
@@ -44,9 +46,9 @@ describe('Helpers', function() {
       expect(() => readPackageJson().to.be.an.instanceof(Promise));
     });
 
-    it('should throw error when path does not exist', (done) => {
-      readPackageJson('').catch((reason) => {
-        expect(reason).to.be.an.instanceof(Error);
+    it('should return a hollow object when path does not exist', (done) => {
+      readPackageJson('/', 'abroxia').then((pkg) => {
+        expect(pkg).to.be.an('object');
         done();
       });
     });
@@ -67,6 +69,32 @@ describe('Helpers', function() {
         done();
       });
     });
+
+  });
+
+  describe('readYarnLock', () => {
+
+    it('should be a function that accepts two optional arguments', () => {
+      expect(readYarnLock).to.be.a('function');
+      expect(readYarnLock.length).to.equal(0);
+    });
+
+    it('should throw TypeError when passed argument that is not a string', () => {
+      expect(() => readYarnLock(42)).to.throw(TypeError);
+    });
+
+    it('should return a promise object', () => {
+      expect(() => readYarnLock().to.be.an.instanceof(Promise));
+    });
+
+    it('should return a hollow object when path does not exist', (done) => {
+      readYarnLock('/', 'abroxia').then((yarnDeps) => {
+        expect(yarnDeps).to.be.an('object');
+        done();
+      });
+    });
+
+    // TODO generate and test actual yarn.lock
 
   });
 
@@ -130,18 +158,31 @@ describe('Helpers', function() {
   };
 
   describe('NpmConfig', () => {
-    it('should be a factory that returns a config object', () => {
+    it('should be a factory that returns an array of config objects', () => {
       expect(NpmConfig).to.be.a('function');
-      const obj = NpmConfig(deps);
-      expect(obj).to.be.an('object');
-      expect(obj).to.deep.equal({
+      const result = NpmConfig(deps);
+      expect(result).to.be.an('array');
+      expect(result).to.deep.equal([{
         hostname: 'api.npmjs.org',
         path: '/downloads/point/last-month/lodash,ramda',
         method: 'GET',
         headers: {
           'User-Agent': 'cachilders/backpat'
         }
-      });
+      }]);
+    });
+  });
+
+  describe('chopDependencies', () => {
+    it('should be a function', () => {
+      expect(chopDependencies).to.be.a('function');
+    });
+    it('should be a return an array of strings', () => {
+      const result = chopDependencies(new Array(400).fill('a'));
+      expect(result).to.be.an('array');
+      expect(result.length).to.equal(4);
+      expect(result[0]).to.be.a('string');
+      expect(result[0].match(/,/g).length).to.equal(99);
     });
   });
 
