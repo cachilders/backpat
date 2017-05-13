@@ -46,11 +46,12 @@ describe('Helpers', function() {
       expect(() => readPackageJson().to.be.an.instanceof(Promise));
     });
 
-    it('should return a hollow object when path does not exist', (done) => {
+    it('should return a simple, name-only object when path does not exist', (done) => {
       readPackageJson('/', 'abroxia').then((pkg) => {
         expect(pkg).to.be.an('object');
-        done();
+        expect(pkg).to.contain.only.keys('name');
       });
+      done();
     });
 
     it('should return project\'s parsed package.json', (done) => {
@@ -66,8 +67,8 @@ describe('Helpers', function() {
           'dependencies',
           'devDependencies'
         );
-        done();
       });
+      done();
     });
 
   });
@@ -90,11 +91,18 @@ describe('Helpers', function() {
     it('should return a hollow object when path does not exist', (done) => {
       readYarnLock('/', 'abroxia').then((yarnDeps) => {
         expect(yarnDeps).to.be.an('object');
-        done();
+        expect(yarnDeps).to.contain.only.keys('yarnDependencies');
       });
+      done();
     });
 
-    // TODO generate and test actual yarn.lock
+    it('should return project\'s parsed yarn.lock', (done) => {
+      readYarnLock().then((lock) => {
+        expect(lock).to.be.an('object');
+        expect(lock).to.contain.only.keys('yarnDependencies');
+      });
+      done();
+    });
 
   });
 
@@ -199,8 +207,8 @@ describe('Helpers', function() {
         expect(result).to.be.an('object');
         expect(result.lodash).to.have.any.keys('downloads');
         expect(result.ramda).to.have.any.keys('downloads');
-        done();
       });
+      done();
     });
   });
 
@@ -246,15 +254,15 @@ describe('Helpers', function() {
     it('should eventually return an object', (done) => {
       fetchEachDependency(deps).then((dependencies) => {
         expect(dependencies).to.be.an('object');
-        done();
       });
+      done();
     });
 
     it('should eventually map dependencies to objects', (done) => {
       fetchEachDependency(deps).then((dependencies) => {
         expect(Object.keys(dependencies)).to.have.length(2);
-        done();
       });
+      done();
     });
 
   });
@@ -279,8 +287,8 @@ describe('Helpers', function() {
     it('should eventually resolve to a dependency\'s package', (done) => {
       fetchDependency('ramda').then((result) => {
         expect(result).to.be.an('object');
-        done();
       });
+      done();
     });
 
   });
@@ -324,43 +332,43 @@ describe('Helpers', function() {
     it('should eventually return the correct output', (done) => {
       resolveDependency(dependency1).then((result) => {
         expect(result).to.have.all.keys('name', 'url', 'description');
-        done();
       });
+      done();
     });
 
     it('should adequately process standard URL patterns', (done) => {
       resolveDependency(dependency1).then((result) => {
         expect(result.url).to.equal('https://lodash.com/');
-        done();
       });
+      done();
     });
 
     it('should adequately process ssh URL patterns', (done) => {
       resolveDependency(dependency2).then((result) => {
         expect(result.url).to.equal('https://github.com/webpack/style-loader');
-        done();
       });
+      done();
     });
 
     it('should adequately process minimal URL patterns', (done) => {
       resolveDependency(dependency3).then((result) => {
         expect(result.url).to.equal('https://shrg.biz');
-        done();
       });
+      done();
     });
 
     it('should adequately process git URL patterns', (done) => {
       resolveDependency(dependency4).then((result) => {
         expect(result.url).to.equal('https://github.com/jtangelder/sass-loader');
-        done();
       });
+      done();
     });
 
     it('should return blank URL value in absence of URL string', (done) => {
       resolveDependency(dependency5).then((result) => {
         expect(result.url).to.equal('');
-        done();
       });
+      done();
     });
 
   });
