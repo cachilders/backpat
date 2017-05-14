@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.7.0 - 2017-5-13
+### Added
+- Yarn lock parsing
+- More tests
+
+### Changed
+- Correct logical error retrieving repo URLs
+- Revise dependency processing to allow for very large collections
+
 ## 0.6.3 - 2017-1-19
 ### Changed
 - Minor bugfix

@@ -3,13 +3,15 @@ import chaiSpies from 'chai-spies';
 import {
   NpmConfig,
   readPackageJson,
+  readYarnLock,
   rootDir,
   instantiateDependencies,
   fetchEachDependency,
   fetchDependency,
   resolveDependency,
   addNode,
-  nodeDetails
+  nodeDetails,
+  chopDependencies
 } from './helpers';
 import { getNpmData } from './utilities';
 
@@ -31,7 +33,7 @@ describe('Helpers', function() {
 
   describe('readPackageJson', () => {
 
-    it('should be a function that accepts one optional argument', () => {
+    it('should be a function that accepts two optional arguments', () => {
       expect(readPackageJson).to.be.a('function');
       expect(readPackageJson.length).to.equal(0);
     });
@@ -44,11 +46,12 @@ describe('Helpers', function() {
       expect(() => readPackageJson().to.be.an.instanceof(Promise));
     });
 
-    it('should throw error when path does not exist', (done) => {
-      readPackageJson('').catch((reason) => {
-        expect(reason).to.be.an.instanceof(Error);
-        done();
+    it('should return a simple, name-only object when path does not exist', (done) => {
+      readPackageJson('/', 'abroxia').then((pkg) => {
+        expect(pkg).to.be.an('object');
+        expect(pkg).to.contain.only.keys('name');
       });
+      done();
     });
 
     it('should return project\'s parsed package.json', (done) => {
@@ -64,8 +67,41 @@ describe('Helpers', function() {
           'dependencies',
           'devDependencies'
         );
-        done();
       });
+      done();
+    });
+
+  });
+
+  describe('readYarnLock', () => {
+
+    it('should be a function that accepts two optional arguments', () => {
+      expect(readYarnLock).to.be.a('function');
+      expect(readYarnLock.length).to.equal(0);
+    });
+
+    it('should throw TypeError when passed argument that is not a string', () => {
+      expect(() => readYarnLock(42)).to.throw(TypeError);
+    });
+
+    it('should return a promise object', () => {
+      expect(() => readYarnLock().to.be.an.instanceof(Promise));
+    });
+
+    it('should return a hollow object when path does not exist', (done) => {
+      readYarnLock('/', 'abroxia').then((yarnDeps) => {
+        expect(yarnDeps).to.be.an('object');
+        expect(yarnDeps).to.contain.only.keys('yarnDependencies');
+      });
+      done();
+    });
+
+    it('should return project\'s parsed yarn.lock', (done) => {
+      readYarnLock().then((lock) => {
+        expect(lock).to.be.an('object');
+        expect(lock).to.contain.only.keys('yarnDependencies');
+      });
+      done();
     });
 
   });
@@ -130,18 +166,31 @@ describe('Helpers', function() {
   };
 
   describe('NpmConfig', () => {
-    it('should be a factory that returns a config object', () => {
+    it('should be a factory that returns an array of config objects', () => {
       expect(NpmConfig).to.be.a('function');
-      const obj = NpmConfig(deps);
-      expect(obj).to.be.an('object');
-      expect(obj).to.deep.equal({
+      const result = NpmConfig(deps);
+      expect(result).to.be.an('array');
+      expect(result).to.deep.equal([{
         hostname: 'api.npmjs.org',
         path: '/downloads/point/last-month/lodash,ramda',
         method: 'GET',
         headers: {
           'User-Agent': 'cachilders/backpat'
         }
-      });
+      }]);
+    });
+  });
+
+  describe('chopDependencies', () => {
+    it('should be a function', () => {
+      expect(chopDependencies).to.be.a('function');
+    });
+    it('should be a return an array of strings', () => {
+      const result = chopDependencies(new Array(400).fill('a'));
+      expect(result).to.be.an('array');
+      expect(result.length).to.equal(4);
+      expect(result[0]).to.be.a('string');
+      expect(result[0].match(/,/g).length).to.equal(99);
     });
   });
 
@@ -158,8 +207,8 @@ describe('Helpers', function() {
         expect(result).to.be.an('object');
         expect(result.lodash).to.have.any.keys('downloads');
         expect(result.ramda).to.have.any.keys('downloads');
-        done();
       });
+      done();
     });
   });
 
@@ -205,15 +254,15 @@ describe('Helpers', function() {
     it('should eventually return an object', (done) => {
       fetchEachDependency(deps).then((dependencies) => {
         expect(dependencies).to.be.an('object');
-        done();
       });
+      done();
     });
 
     it('should eventually map dependencies to objects', (done) => {
       fetchEachDependency(deps).then((dependencies) => {
         expect(Object.keys(dependencies)).to.have.length(2);
-        done();
       });
+      done();
     });
 
   });
@@ -238,8 +287,8 @@ describe('Helpers', function() {
     it('should eventually resolve to a dependency\'s package', (done) => {
       fetchDependency('ramda').then((result) => {
         expect(result).to.be.an('object');
-        done();
       });
+      done();
     });
 
   });
@@ -283,43 +332,43 @@ describe('Helpers', function() {
     it('should eventually return the correct output', (done) => {
       resolveDependency(dependency1).then((result) => {
         expect(result).to.have.all.keys('name', 'url', 'description');
-        done();
       });
+      done();
     });
 
     it('should adequately process standard URL patterns', (done) => {
       resolveDependency(dependency1).then((result) => {
         expect(result.url).to.equal('https://lodash.com/');
-        done();
       });
+      done();
     });
 
     it('should adequately process ssh URL patterns', (done) => {
       resolveDependency(dependency2).then((result) => {
         expect(result.url).to.equal('https://github.com/webpack/style-loader');
-        done();
       });
+      done();
     });
 
     it('should adequately process minimal URL patterns', (done) => {
       resolveDependency(dependency3).then((result) => {
         expect(result.url).to.equal('https://shrg.biz');
-        done();
       });
+      done();
     });
 
     it('should adequately process git URL patterns', (done) => {
       resolveDependency(dependency4).then((result) => {
         expect(result.url).to.equal('https://github.com/jtangelder/sass-loader');
-        done();
       });
+      done();
     });
 
     it('should return blank URL value in absence of URL string', (done) => {
       resolveDependency(dependency5).then((result) => {
         expect(result.url).to.equal('');
-        done();
       });
+      done();
     });
 
   });

@@ -9,12 +9,14 @@ import {
   readPackageJson,
   fetchEachDependency,
   instantiateDependencies,
+  readYarnLock,
   addNode
  } from './helpers';
 
 export function backpat() {
   return new Promise((resolve) => {
-    readPackageJson()
+    Promise.all([readPackageJson(), readYarnLock()])
+    .then((result) => Object.assign({}, ...result))
     .then(instantiateDependencies)
     .then((dependencies) => {
       const merge = curriedMerge(dependencies);
