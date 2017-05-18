@@ -4,7 +4,7 @@ import {
   curriedMerge,
   formatVersions,
   filterPrivate,
-  removeCaret,
+  removeSemverCharacter,
   addVersionProp,
   isNotPrivate,
   deeplyMerge
@@ -15,19 +15,19 @@ describe('Utilities', () => {
   describe('removeCarat', () => {
 
     it('should be a function', () => {
-      expect(removeCaret).to.be.a('function');
+      expect(removeSemverCharacter).to.be.a('function');
     });
 
     it('should return a string when provided a string', () => {
-      expect(removeCaret('^3.5.0')).to.be.a('string');
+      expect(removeSemverCharacter('^3.5.0')).to.be.a('string');
     });
 
     it('should return a string with first caret removed', () => {
-      expect(removeCaret('s^tring')).to.equal('string');
+      expect(removeSemverCharacter('s^tring')).to.equal('string');
     });
 
     it('should be caret agnostic re: strings', () => {
-      expect(removeCaret('string')).to.equal('string');
+      expect(removeSemverCharacter('string')).to.equal('string');
     });
 
   });
