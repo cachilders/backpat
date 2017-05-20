@@ -60,8 +60,8 @@ export function instantiateDependencies(packageJson: {}) {
         formatVersions(packageJson.dependencies) : null,
       packageJson.devDependencies ?
         formatVersions(packageJson.devDependencies): null,
-      packageJson.yarnDependencies ?
-        formatVersions(packageJson.yarnDependencies): null,
+      // packageJson.yarnDependencies ?
+      //   formatVersions(packageJson.yarnDependencies): null,
     );
     resolve(dependencies);
   });
@@ -70,6 +70,9 @@ export function instantiateDependencies(packageJson: {}) {
 export function fetchEachDependency(dependencies: {}, path: string) {
   if (typeof dependencies !== 'object' || Array.isArray(dependencies)) {
     throw new TypeError(`Function fetchEachDependency expected type: object but received ${ typeof dependencies } instead`);
+  }
+  if (path && typeof path !== 'string') {
+    throw new TypeError(`Function fetchEachDependency expected type: object but received ${ typeof path } instead`);
   }
   return Promise.all(Object.keys(dependencies || {}).map((dependency) => fetchDependency(dependency, path)))
   .then((properties) => {
@@ -83,6 +86,9 @@ export function fetchEachDependency(dependencies: {}, path: string) {
 export function fetchDependency(dependency: string, path: string) {
   if (typeof dependency !== 'string') {
     throw new TypeError(`Function fetchDependency expected type: string but received ${ typeof dependency } instead`);
+  }
+  if (path && typeof path !== 'string') {
+    throw new TypeError(`Function fetchDependency expected type: string but received ${ typeof path } instead`);
   }
   return readPackageJson(path + 'node_modules/', dependency)
   .then(resolveDependency);

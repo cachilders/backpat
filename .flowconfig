@@ -1,6 +1,7 @@
 [ignore]
 *.test.js
 dist
+node_modules
 
 [include]
 event-emitter

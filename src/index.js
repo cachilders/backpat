@@ -6,7 +6,7 @@ import {
   curriedMerge,
   pickDownloads } from './utilities';
 import { addNode } from './helpers';
-import { buildDependencyTree } from './macros';
+import { mapDependencyTree } from './macros';
 
 export const rootDir = process.cwd() + '/';
 export const flatMap = {};
@@ -16,7 +16,7 @@ let obj;
 export function backpat() {
   return new Promise((resolve) => {
     // Break this into a module to be used recursively
-    buildDependencyTree()
+    mapDependencyTree()
     .then((deps) => obj = deps)
     .then(() => {
       const merge = curriedMerge(flatMap);

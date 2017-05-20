@@ -8,7 +8,7 @@ import {
   instantiateDependencies,
   readYarnLock } from './helpers';
 
-export function buildDependencyTree(path: string = rootDir) {
+export function mapDependencyTree(path: string = rootDir) {
   return Promise.all([readPackageJson(path), readYarnLock(path)])
   .then((result) => Object.assign({}, ...result))
   .then(instantiateDependencies)
@@ -22,10 +22,9 @@ export function buildDependencyTree(path: string = rootDir) {
         obj[k] = flatMap[k];
       } else {
         flatMap[k] = obj[k];
-        obj[k].dependencies = await buildDependencyTree(`${rootDir}node_modules/${k}/`);
+        obj[k].dependencies = await mapDependencyTree(`${rootDir}node_modules/${k}/`);
       }
     }
     return obj;
-  })
-  .catch((reason) => {throw new Error(reason)});
+  });
 }
