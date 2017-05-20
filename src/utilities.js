@@ -19,12 +19,16 @@ export const curriedMerge = R.curry(deeplyMerge);
 export const getNpmData = R.compose(httpsGetPromise, NpmConfig);
 export const isNotPrivate = R.compose(R.not, R.prop('private'));
 export const filterPrivate = R.filter(isNotPrivate);
+
+export const assignObjectArray = (objectArray) => Object.assign({}, ...objectArray);
+export const fetchDependencies = (dependencyObject) => fetchEachDependency(dependencyObject, rootDir);
+
 export const mapDependencyTree = (path: string = rootDir) => {
   return Promise.all([readPackageJson(path), readYarnLock(path)])
-  .then((result) => Object.assign({}, ...result))
+  .then(assignObjectArray)
   .then(instantiateDependencies)
   .then(filterPrivate)
-  .then((result) => fetchEachDependency(result, rootDir))
+  .then(fetchDependencies)
   .then(async function(obj) {
     for (let k in obj) {
       if (`${k}/` === path.replace(`${rootDir}node_modules/`, '')) {
