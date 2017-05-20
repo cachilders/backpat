@@ -4,9 +4,9 @@ import 'babel-polyfill';
 import {
   getNpmData,
   curriedMerge,
-  pickDownloads } from './utilities';
+  pickDownloads,
+  mapDependencyTree } from './utilities';
 import { addNode } from './helpers';
-import { mapDependencyTree } from './macros';
 
 export const rootDir = process.cwd() + '/';
 export const flatMap = {};
