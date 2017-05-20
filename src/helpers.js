@@ -4,7 +4,6 @@ import https from 'https';
 import { readFile } from 'fs';
 import { formatVersions } from './utilities';
 
-export const rootDir = process.cwd() + '/';
 export const nodeDetails = {
   node: {
     name        : 'Node.js',
@@ -15,7 +14,7 @@ export const nodeDetails = {
   }
 };
 
-export const readPackageJson = (path: string = rootDir, dependency) => {
+export const readPackageJson = (path: string, dependency: string) => {
   if (typeof path !== 'string') {
     throw new TypeError(`Function readPackageJson expected type: string but received ${ typeof path } instead`);
   }
@@ -31,26 +30,26 @@ export const readPackageJson = (path: string = rootDir, dependency) => {
   });
 };
 
-export const readYarnLock = (path: string = rootDir) => {
-  if (typeof path !== 'string') {
-    throw new TypeError(`Function readYarnLock expected type: string but received ${ typeof path } instead`);
-  }
-  return new Promise((resolve) => {
-    readFile(`${path}/yarn.lock`, (err, data) => {
-      if (err) {
-        resolve({yarnDependencies: {}});
-      } else {
-        const lockArray = data.toString().match(/\w.*\@.*(?=:)/g);
-        const yarnDeps = {
-          yarnDependencies: lockArray.reduce((deps, dep) => {
-            deps[dep.replace(/\@.*/, '')] = dep.replace(/.*[\@\^\~\=\>\<]/, '');
-            return deps;
-          }, {}),
-        };
-        resolve(yarnDeps);
-      }
-    });
-  });
+export const readYarnLock = (path: string) => {
+  // if (typeof path !== 'string') {
+  //   throw new TypeError(`Function readYarnLock expected type: string but received ${ typeof path } instead`);
+  // }
+  // return new Promise((resolve) => {
+  //   readFile(`${path}/yarn.lock`, (err, data) => {
+  //     if (err) {
+  //       resolve({yarnDependencies: {}});
+  //     } else {
+  //       const lockArray = data.toString().match(/\w.*\@.*(?=:)/g);
+  //       const yarnDeps = {
+  //         yarnDependencies: lockArray.reduce((deps, dep) => {
+  //           deps[dep.replace(/\@.*/, '')] = dep.replace(/.*[\@\^\~\=\>\<]/, '');
+  //           return deps;
+  //         }, {}),
+  //       };
+  //       resolve(yarnDeps);
+  //     }
+  //   });
+  // });
 };
 
 export function instantiateDependencies(packageJson: {}) {
@@ -68,11 +67,11 @@ export function instantiateDependencies(packageJson: {}) {
   });
 }
 
-export function fetchEachDependency(dependencies: {}) {
+export function fetchEachDependency(dependencies: {}, path: string) {
   if (typeof dependencies !== 'object' || Array.isArray(dependencies)) {
     throw new TypeError(`Function fetchEachDependency expected type: object but received ${ typeof dependencies } instead`);
   }
-  return Promise.all(Object.keys(dependencies).map(fetchDependency))
+  return Promise.all(Object.keys(dependencies || {}).map((dependency) => fetchDependency(dependency, path)))
   .then((properties) => {
     properties.forEach((property) => {
       Object.assign(dependencies[property.name], property);
@@ -81,11 +80,11 @@ export function fetchEachDependency(dependencies: {}) {
   });
 }
 
-export function fetchDependency(dependency: string) {
+export function fetchDependency(dependency: string, path: string) {
   if (typeof dependency !== 'string') {
     throw new TypeError(`Function fetchDependency expected type: string but received ${ typeof dependency } instead`);
   }
-  return readPackageJson(rootDir + 'node_modules/', dependency)
+  return readPackageJson(path + 'node_modules/', dependency)
   .then(resolveDependency);
 }
 
@@ -112,7 +111,7 @@ export function chopDependencies(depChunk: [], depChunks: [] = []) {
 }
 
 export function NpmConfig(dependencies: {}) {
-  const deps = Object.keys(dependencies);
+  const deps = Object.keys(dependencies || {}).filter((key) => key.match(/\@/) === null);
   const depChunks = chopDependencies(deps);
 
   return depChunks.reduce((optsArray, depChunk) => {

@@ -1,31 +1,30 @@
 /* @flow */
 
+import 'babel-polyfill';
 import {
   getNpmData,
   curriedMerge,
-  pickDownloads,
-  filterPrivate } from './utilities';
-import {
-  readPackageJson,
-  fetchEachDependency,
-  instantiateDependencies,
-  readYarnLock,
-  addNode
- } from './helpers';
+  pickDownloads } from './utilities';
+import { addNode } from './helpers';
+import { buildDependencyTree } from './macros';
+
+export const rootDir = process.cwd() + '/';
+export const flatMap = {};
+
+let obj;
 
 export function backpat() {
   return new Promise((resolve) => {
-    Promise.all([readPackageJson(), readYarnLock()])
-    .then((result) => Object.assign({}, ...result))
-    .then(instantiateDependencies)
-    .then((dependencies) => {
-      const merge = curriedMerge(dependencies);
-      return getNpmData(dependencies)
+    // Break this into a module to be used recursively
+    buildDependencyTree()
+    .then((deps) => obj = deps)
+    .then(() => {
+      const merge = curriedMerge(flatMap);
+      return getNpmData(flatMap)
       .then(pickDownloads)
       .then(merge);
     })
-    .then(fetchEachDependency)
-    .then(filterPrivate)
+    .then(() => obj)
     .then(addNode)
     .then((dependencies) => resolve(dependencies))
     .catch(console.error);
