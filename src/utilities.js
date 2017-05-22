@@ -2,44 +2,23 @@
 
 import R from 'ramda';
 import {
+  chopDependencies,
   NpmConfig,
   httpsGetPromise,
-  readPackageJson,
   fetchEachDependency,
-  instantiateDependencies,
-  readYarnLock } from './helpers';
-import { rootDir, flatMap } from './index';
+  rootDir } from './helpers';
 
 export const removeSemverCharacter = R.replace(/[\^\~\<\>][\=]?/, '');
-export const addVersionProp = (v, k, o) => o[k] = { 'version': removeSemverCharacter(v) };
+export const addVersionProp = (v: string, k: string, o: {}) => o[k] = { 'version': removeSemverCharacter(v) };
 export const pickDownloads = R.map(R.pick(['downloads']));
 export const formatVersions = R.mapObjIndexed(addVersionProp);
-export const deeplyMerge = (obj1, obj2) => R.mapObjIndexed((v, k, o) => R.merge(obj1[k], obj2[k]), obj1);
+export const deeplyMerge = (obj1: {}, obj2: {}) => R.mapObjIndexed((v, k, o) => R.merge(obj1[k], obj2[k]), obj1);
 export const curriedMerge = R.curry(deeplyMerge);
-export const getNpmData = R.compose(httpsGetPromise, NpmConfig);
+export const filterScopedDeps = (dependencies) => Object.keys(dependencies || {}).filter((key) => key.match(/\@/) === null)
+export const getNpmData = R.compose(httpsGetPromise, NpmConfig, chopDependencies, filterScopedDeps);
 export const isNotPrivate = R.compose(R.not, R.prop('private'));
 export const filterPrivate = R.filter(isNotPrivate);
 
-export const assignObjectArray = (objectArray) => Object.assign({}, ...objectArray);
-export const fetchDependencies = (dependencyObject) => fetchEachDependency(dependencyObject, rootDir);
-
-export const mapDependencyTree = (path: string = rootDir) => {
-  return Promise.all([readPackageJson(path), readYarnLock(path)])
-  .then(assignObjectArray)
-  .then(instantiateDependencies)
-  .then(filterPrivate)
-  .then(fetchDependencies)
-  .then(async function(obj) {
-    for (let k in obj) {
-      if (`${k}/` === path.replace(`${rootDir}node_modules/`, '')) {
-        obj[k] = 'CIRCULAR';
-      } else if (flatMap[k]) {
-        obj[k] = flatMap[k];
-      } else {
-        flatMap[k] = obj[k];
-        obj[k].dependencies = await mapDependencyTree(`${rootDir}node_modules/${k}/`);
-      }
-    }
-    return obj;
-  });
-};
+export const assignObjectArray = (objectArray: []) => R.merge(...objectArray);
+export const fetchDependencies = (dependencies: {}) => fetchEachDependency(dependencies, rootDir);
+export const bundleWithFlatMap = (dependencies: {}) => ({nested: dependencies, flat: {}});

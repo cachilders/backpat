@@ -2,7 +2,14 @@
 
 import https from 'https';
 import { readFile } from 'fs';
-import { formatVersions } from './utilities';
+import {
+  assignObjectArray,
+  filterPrivate,
+  fetchDependencies,
+  bundleWithFlatMap,
+  formatVersions } from './utilities';
+
+export const rootDir = `${process.cwd()}/`;
 
 export const nodeDetails = {
   node: {
@@ -31,6 +38,7 @@ export const readPackageJson = (path: string, dependency: string) => {
 };
 
 export const readYarnLock = (path: string) => {
+  // DISABLED FOR THE TIME
   // if (typeof path !== 'string') {
   //   throw new TypeError(`Function readYarnLock expected type: string but received ${ typeof path } instead`);
   // }
@@ -75,12 +83,12 @@ export function fetchEachDependency(dependencies: {}, path: string) {
     throw new TypeError(`Function fetchEachDependency expected type: object but received ${ typeof path } instead`);
   }
   return Promise.all(Object.keys(dependencies || {}).map((dependency) => fetchDependency(dependency, path)))
-  .then((properties) => {
-    properties.forEach((property) => {
-      Object.assign(dependencies[property.name], property);
+    .then((properties) => {
+      properties.forEach((property) => {
+        Object.assign(dependencies[property.name], property);
+      });
+      return dependencies;
     });
-    return dependencies;
-  });
 }
 
 export function fetchDependency(dependency: string, path: string) {
@@ -91,7 +99,38 @@ export function fetchDependency(dependency: string, path: string) {
     throw new TypeError(`Function fetchDependency expected type: string but received ${ typeof path } instead`);
   }
   return readPackageJson(path + 'node_modules/', dependency)
-  .then(resolveDependency);
+    .then(resolveDependency);
+}
+
+export async function asyncMapSubDependencies(dependencies: {}, parent: {nested: {}, flat: {}}) {
+  // To borrow from my most common error, I'm running in circles here. None of the right stuff.
+  for (let k in dependencies) {
+    const mapTo = `${k}-${dependencies[k].version}`;
+    const newDependency = Object.assign(dependencies[k], {
+      dependencies: parent.flat[mapTo] || 'GET DEPENDENCIES', // await mapDependencyTree(`${rootDir}node_modules/${k}/_child`, parent),
+      mapTo
+    });
+    if (parent.flat && !parent.flat[mapTo]) {
+      parent.flat[mapTo] = newDependency;
+      dependencies[k] = newDependency;
+    } else {
+      dependencies[k] = parent.flat[mapTo];
+    }
+  }
+  console.log(parent)
+  return dependencies;
+}
+
+export function mapDependencyTree(path: string = rootDir, parent: {}) {
+  const child = path.match('_child') !== null;
+  const nextPath = path.replace('_child', '');
+  return Promise.all([readPackageJson(nextPath), readYarnLock(nextPath)])
+    .then(assignObjectArray)
+    .then(instantiateDependencies)
+    .then(filterPrivate)
+    .then(fetchDependencies)
+    .then((dependencies) => (child ? dependencies : bundleWithFlatMap(dependencies)))
+    .then((dependencies) => asyncMapSubDependencies(dependencies.nested ? dependencies.nested : dependencies, parent || dependencies));
 }
 
 export function resolveDependency(dependency: { name: string, homepage: string, description: string, repository: { url: string } }) {
@@ -116,9 +155,8 @@ export function chopDependencies(depChunk: [], depChunks: [] = []) {
   return depChunks;
 }
 
-export function NpmConfig(dependencies: {}) {
-  const deps = Object.keys(dependencies || {}).filter((key) => key.match(/\@/) === null);
-  const depChunks = chopDependencies(deps);
+export function NpmConfig(depChunks: []) {
+
 
   return depChunks.reduce((optsArray, depChunk) => {
     optsArray.push({

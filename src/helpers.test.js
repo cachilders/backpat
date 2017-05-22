@@ -1,6 +1,5 @@
 import chai, { expect } from 'chai';
 import chaiSpies from 'chai-spies';
-import { rootDir } from './index';
 import {
   NpmConfig,
   readPackageJson,
@@ -8,16 +7,25 @@ import {
   instantiateDependencies,
   fetchEachDependency,
   fetchDependency,
+  asyncMapSubDependencies,
+  mapDependencyTree,
   resolveDependency,
   addNode,
   nodeDetails,
-  chopDependencies
+  chopDependencies,
+  rootDir
 } from './helpers';
 import { getNpmData } from './utilities';
 
 chai.use(chaiSpies);
 
 describe('Helpers', function() {
+
+  describe('rootDir', () => {
+    it('should be a string', () => {
+      expect(rootDir).to.be.a('string');
+    });
+  });
 
   describe('nodeDetails', () => {
     it('should be an object', () => {
@@ -294,6 +302,58 @@ describe('Helpers', function() {
       fetchDependency('ramda').then((result) => {
         expect(result).to.be.an('object');
       });
+      done();
+    });
+
+  });
+
+  describe('asyncMapSubDependencies', ( ) => {
+    
+    it('should be a function', () => {
+      expect(asyncMapSubDependencies).to.be.a('function');
+    });
+
+    it('should return an object when passed an object', (done) => {
+      asyncMapSubDependencies({dog: 'shoes'})
+      .then((result) => expect(result).to.be.an('object'));
+      done();
+    });
+
+    it('should decorate flat map and call parent method recursively if module is not in flat map', (done) => {
+      asyncMapSubDependencies({nested: {dog: 'shoes'}, flat: {dog: 'shoes'}})
+      .then((result) => expect(result).to.be.an('object'));
+      done();
+    });
+  
+  })
+
+  describe('mapDependencyTree', () => {
+
+    const sampleRoute = mapDependencyTree(`${rootDir}node_modules/rimraf`);
+
+    it('should be a function', () => {
+      expect(mapDependencyTree).to.be.a('function');
+    });
+
+    it('should return a promise when passed an address', () => {
+      expect(sampleRoute).to.be.an.instanceof(Promise);
+    });
+
+    it('returned promise should eventually resolve into an object', (done) => {
+      sampleRoute
+      .then((result) => expect(result).to.be.an('object'));
+      done();
+    });
+
+    it('resolved object should contain dependency props', (done) => {
+      sampleRoute
+      .then((result) => expect(result.flat).to.have.all.keys(['glob', 'mkdirp', 'tap']));
+      done();
+    });
+
+    it('dependency props should contain dependency props', (done) => {
+      sampleRoute
+      .then((result) => expect(result.flat.glob.dependencies).to.be.an('object'));
       done();
     });
 

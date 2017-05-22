@@ -44,7 +44,7 @@ module.exports = {
     "arrow-spacing": "error",
     "arrow-parens": ["error", "always"],
     "semi": ["error", "always"],
-    "no-confusing-arrow": ["error", { "allowParens": false }],
+    "no-confusing-arrow": ["error", { "allowParens": true }],
     "no-constant-condition": "error",
     "no-labels": "error",
     "no-multiple-empty-lines": ["error", { max: 1, maxEOF: 1 }],

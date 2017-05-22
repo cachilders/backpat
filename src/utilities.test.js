@@ -7,9 +7,7 @@ import {
   removeSemverCharacter,
   addVersionProp,
   isNotPrivate,
-  deeplyMerge,
-  mapDependencyTree } from './utilities';
-  import { rootDir } from './index';
+  deeplyMerge } from './utilities';
 
 describe('Utilities', () => {
 
@@ -191,38 +189,6 @@ describe('Utilities', () => {
 
     it('returned object should not contain private dependencies', () => {
       expect(filteredDeps).to.not.have.any.keys(['chai', 'coveralls']);
-    });
-
-  });
-
-  describe('mapDependencyTree', () => {
-
-    const sampleRoute = mapDependencyTree(`${rootDir}node_modules/rimraf`);
-
-    it('should be a function', () => {
-      expect(mapDependencyTree).to.be.a('function');
-    });
-
-    it('should return a promise when passed an address', () => {
-      expect(sampleRoute).to.be.an.instanceof(Promise);
-    });
-
-    it('returned promise should eventually resolve into an object', (done) => {
-      sampleRoute
-      .then((result) => expect(result).to.be.an('object'));
-      done();
-    });
-
-    it('resolved object should contain dependency props', (done) => {
-      sampleRoute
-      .then((result) => expect(result).to.have.all.keys(['glob', 'mkdirp', 'tap']));
-      done();
-    });
-
-    it('dependency props should contain dependency props', (done) => {
-      sampleRoute
-      .then((result) => expect(result.glob.dependencies).to.be.an('object'));
-      done();
     });
 
   });
